@@ -12,7 +12,8 @@ Input format for COW/DeReKo topic modelling
 – lines not starting with < are considered VRT
 – lemma is "(unknown)" if TreeTagger + COW additions do not
   know the word
-
+- doc_id is an MD5 hash (typically of the URL or other
+  identifier) suffixed with 4 random hex digits
 
 === Tagger models ===
 

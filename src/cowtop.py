@@ -1,24 +1,25 @@
 # COW + IDS topic modeling helpers based on gensim.
 
-import gensim
 import re
-
-def deentify(s):
-    return 
+from gensim import corpora
 
 
-class Cowcorp:
+class CowcorpVec:
+
+    def __init__(self, filename, selectors, filters, dictionary):
+        self.corpus = CowcorpText(filename, selectors, filters)
+        self.dictionary = dictionary
+
+    def __iter__(self):
+        for d in self.corpus:
+            yield self.dictionary.doc2bow(d)
+
+
+
+class CowcorpText:
     """A class that reads COW-XML document by document for topic modeling"""
 
 
-    # filters is a set of strings signalling which filters to apply:
-    #   entity : convert entities
-    #   alpha : only accept roman alphabetic strings
-    #   lower : lowercase everything
-    #   
-    # selectors is a set of indexes (1-based) refering to the
-    # columns to be used.
-    #   
     def __init__(self, filename, selectors, filters):
         self.infilename = filename
         self.infile = open(self.infilename)
@@ -100,7 +101,7 @@ class Cowcorp:
         # Select columns.
         b = [self.select(token) for token in b]
 
-        return " ".join(b)
+        return b
 
 
 

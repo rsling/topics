@@ -1,6 +1,0 @@
-#!/bin/bash
-
-dir=`pwd`
-cd /Users/user/Workingcopies/topics/src
-python test_corpus_import.py
-cd $dir

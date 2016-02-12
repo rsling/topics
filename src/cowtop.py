@@ -83,20 +83,24 @@ class CowcorpText:
         for filt in self.filters: 
             if filt[1] == "alpha":
                 b = self.filter_alpha(b, filt[0])
-            if filt[1] == "lower":
+            elif filt[1] == "lower":
                 b = self.filter_lower(b, filt[0])
-            if filt[1] == "entities":
+            elif filt[1] == "entities":
                 b = self.filter_entities(b, filt[0])
-            if filt[1] == "truncate":
+            elif filt[1] == "truncate":
                 b = self.filter_truncate(b, filt[0], filt[2])
-            if filt[1] == "length":
+            elif filt[1] == "length":
                 b = self.filter_length(b, filt[0], filt[2], filt[3])
-            if filt[1] == "copyif":
+            elif filt[1] == "copyif":
+                b = self.filter_copyif(b, filt[0], filt[2], filt[3])
+            elif filt[1] == "copyif2":
                 b = self.filter_copyif2(b, filt[0], filt[2], filt[3], filt[4], filt[5])
-            if filt[1] == "blacklist":
+            elif filt[1] == "blacklist":
                 b = self.filter_blacklist(b, filt[0], filt[2])
-            if filt[1] == "whitelist":
+            elif filt[1] == "whitelist":
                 b = self.filter_whitelist(b, filt[0], filt[2])
+            else:
+                raise BaseException('Filter type unknown: ' + filt[1])
 
         # Select columns.
         b = [self.select(token) for token in b]

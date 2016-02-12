@@ -1,3 +1,5 @@
+# Demo script using corpus streaming class.
+
 from cowtop import CowcorpText, CowcorpVec
 import argparse
 from gensim import corpora

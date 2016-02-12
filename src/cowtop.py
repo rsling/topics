@@ -121,7 +121,6 @@ class CowcorpText:
         return [line.split('\t') for line in xmldoc if not line[0] == '<']
 
 
-
     # Filter all non-alpha strings at annotaion idx.
     def filter_alpha(self, document, idx):
         return [token for token in document if token[idx].isalpha()]

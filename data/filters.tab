@@ -3,8 +3,8 @@
 2	alpha
 2	length	4	30
 2	lower
-2	blacklist	lemma.blacklist
+2	blacklist	data/lemma.blacklist
 1	lower
 1	truncate	2
-1	whitelist	pos.whitelist
+1	whitelist	data/pos.whitelist
 

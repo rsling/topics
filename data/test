@@ -1,6 +1,0 @@
-#!/bin/bash
-
-testfile="cattle13.xml"
-output="cattle13"
-
-python ../src/corpus_reader_test.py ${testfile} ${output} 

@@ -58,7 +58,6 @@ class CowcorpText:
                     b.append(l)
                     break
             else:
-                print (u'Reached end of file after ' + str(self.count) + u' documents.').encode('utf-8')
                 raise StopIteration
         
         # If doc start was found, buffer until end of doc.
@@ -70,7 +69,6 @@ class CowcorpText:
                 if self.docend.match(l):
                     break
             else:
-                print(u'End of file in the middle of document?'.encode('utf-8'))
                 raise StopIteration
 
         # There was a document. Increase counter.
@@ -102,6 +100,9 @@ class CowcorpText:
             else:
                 raise BaseException('Filter type unknown: ' + filt[1])
 
+        # Token mergers.
+        # TODO For example, join sequences of I-PER tokens ("helmutkohl" instead of "helmut kohl")
+
         # Select columns.
         b = [self.select(token) for token in b]
 
@@ -112,7 +113,7 @@ class CowcorpText:
     # FUNCTIONALITY
 
 
-    # Reading a line and make ready to use.
+    # Read a line and make ready to use.
     def sread(self):
         return self.infile.readline().decode('utf-8').strip()
 

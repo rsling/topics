@@ -23,22 +23,24 @@ args = parser.parse_args()
 
 filters=list()
 
-filters.append([2, "entities"])
-filters.append([2, "lower"])
-filters.append([2, "length", 3, 30])
+# If you want to copy, always copy first so other filters apply to copied material.
+filters.append([2, "copyif", 0, "(unknown)"])
 #filters.append([2, "copyif2", 0, "(unknown)", 3, "I-PER"])
-filters.append([2, "blacklist", {"(unknown)", "(blank)", "@card@"}])
+
+filters.append([2, "entities"])
 filters.append([2, "alpha"])
+filters.append([2, "length", 4, 30])
+filters.append([2, "lower"])
+filters.append([2, "blacklist", {"(unknown)", "(blank)", "@card@", "mensch", "mann", "frau", "kind"}])
 
 filters.append([1, "lower"])
-filters.append([1, "blacklist", {"adv"}])
 filters.append([1, "truncate", 2])
-filters.append([1, "whitelist", {"nn", "vv", "ad", "ne"}])
+filters.append([1, "whitelist", {"nn", "ne"}])
 
 # Which annotations to use.
-selectors=[2,1]
+selectors=[2]
 
-
+num_tops=30
 
 
 # ===== WORK =====
@@ -53,7 +55,7 @@ c=CowcorpText(args.infile, selectors, filters)
 dictionary = corpora.Dictionary(doc for doc in c)
 
 # Filter frequent types.
-dictionary.filter_extremes(no_below=2, no_above=0.6, keep_n=100000)
+dictionary.filter_extremes(no_below=2, no_above=0.5, keep_n=100000)
 
 # Clean up dictionary.
 dictionary.compactify()
@@ -74,13 +76,13 @@ tfidf.save(args.outprefix + '.tfidf')
 
 print "\nUSING TFIDF WITH CORPUS TO DO LSI\n"
 
-lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=30)
+lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=num_tops)
 corpus_lsi = lsi[corpus_tfidf]
 lsi.save(args.outprefix + '.lsi')
 
 print "\nLOADING SERIALZED CORPUS AND DOING LDA\n"
 
-lda = models.ldamodel.LdaModel(cs, id2word=dictionary, num_topics=30, passes=2, iterations=75, alpha='auto', eval_every=5)
+lda = models.ldamodel.LdaModel(cs, id2word=dictionary, num_topics=num_tops, passes=2, iterations=75, alpha='auto', eval_every=5)
 corpus_lda = lda[cs]
 lda.save(args.outprefix + '.lda')
 

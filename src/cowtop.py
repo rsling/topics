@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # COW + IDS topic modeling helpers based on gensim.
 
 import re

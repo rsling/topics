@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# This tool reads a COW-XML corpus and produces a vectorized
+# corpus (MM format) with an appropriate lexicon with Gensim.
+
 import argparse
 import os.path
 import sys
@@ -36,7 +39,7 @@ def main():
         sys.exit("Merger definition file does not exist: " + args.mergers)
 
     # Check (potentially erase) output files.
-    for fn in [fn_corpus, fn_dict, fn_debug]:
+    for fn in [fn_corpus, fn_dict, fn_dict_txt, fn_debug]:
         if fn is not None and os.path.exists(fn):
             if args.erase:
                 try:

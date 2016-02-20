@@ -57,11 +57,11 @@ def main():
             if not l[1] in ['blacklist','whitelist']:
                 filters.append([int(x) if x.isdigit() else x for x in l])
             else:
-                try:
-                    idx = [p[:2] for p in filters].index([int(l[0]), l[1]])
-                    (filters[idx][2]).append(l[2])
-                except:
-                    filters.append([int(l[0]), l[1], [l[2]]])
+                if not os.path.exists(l[2]):
+                    sys.exit("Blacklist/whitelist file does not exist: " + l[2])
+                with open(l[2]) as f:
+                    il = [x.decode('utf-8').strip() for x in f.readlines()]
+                filters.append([int(l[0]), l[1], il])
 
     # Create dictionary.
     c=CowcorpText(args.infile, columns, filters)

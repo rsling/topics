@@ -3,11 +3,8 @@
 2	alpha
 2	length	4	30
 2	lower
-2	blacklist	(unknown)
-2	blacklist	(blank)
-2	blacklist	@card@
+2	blacklist	lemma.blacklist
 1	lower
 1	truncate	2
-1	whitelist	nn
-1	whitelist	ne
+1	whitelist	pos.whitelist
 

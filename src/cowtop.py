@@ -6,8 +6,8 @@ from gensim import corpora
 
 class CowcorpVec:
 
-    def __init__(self, filename, selectors, filters, dictionary):
-        self.corpus = CowcorpText(filename, selectors, filters)
+    def __init__(self, filename, selectors, filters, mergers, dictionary):
+        self.corpus = CowcorpText(filename, selectors, filters, mergers)
         self.dictionary = dictionary
 
     def __iter__(self):
@@ -20,13 +20,13 @@ class CowcorpText:
     """A class that reads COW-XML document by document for topic modeling"""
 
 
-    def __init__(self, filename, selectors, filters):
+    def __init__(self, filename, selectors, filters, mergers):
         self.infilename = filename
         self.infile = open(self.infilename)
 
         self.selectors = selectors
         self.filters = filters
-
+        self.mergers = mergers
 
         self.count = 1
 
@@ -76,6 +76,10 @@ class CowcorpText:
 
         # Tokenize. Returns list of tokens, each token is a list of annotations.
         b = self.tokenize(b)
+
+        # Execute the token mergers if there are any defined.
+        for merger in self.mergers:
+            b = self.merge_on_identity(b, merger[0], merger[1], merger[2])
 
         # Apply filters.
         for filt in self.filters: 
@@ -175,3 +179,53 @@ class CowcorpText:
             return token[self.selectors[0]]
         else:
             return "_".join([token[i] for i in self.selectors])
+
+    # This function merges the merge fields where the check fields are
+    # identical in running sequences. (I guess that's pretty
+    # incomprehensible. Oh well... Look at the comments and the
+    # output.)
+    def merge_on_identity(self, document, check, value, merge):
+
+        # Create new outpu list.
+        o = list()
+
+        # At start, we have not seen a target item
+        last = [None] * 20
+
+        # Iterate through doc ...
+        for t in document:
+
+            # ... and if the previous token matched ...
+            if last[check] == value:
+
+                # ... and this token matches ...
+                if t[check] == value:
+                    
+                    # ... then construct new "last" with merging ...
+                    for i in merge:
+                        last[i] = last[i] + t[i]
+                
+                # ... but if only the previous token matched, there is
+                #     no sequence, and we write both to output and
+                #     reset the last token buffer ...
+                else:
+                    o.append(last)
+                    o.append(t)
+                    last = [None] * 20
+
+            # ... but if the last token did not match ...
+            else:
+
+                # ... and the current token matches ...
+                if t[check] == value:
+
+                    # ... we might see the beginning of a new sequence
+                    #     and buffer the current token instead of writing it ...
+                    last = t
+
+                # ... but if neither the last nor the current token match
+                #     we write the current token!
+                else:
+                    o.append(t)
+        return o
+

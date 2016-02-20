@@ -14,20 +14,30 @@ def main():
     parser.add_argument('columns', help='comma-separated list of columns to use (0-based)')
     parser.add_argument("--erase", action='store_true', help="erase outout files if present")
     parser.add_argument("--filters", type=str, help="file with tab-separated filter definitions")
+    parser.add_argument("--mergers", type=str, help="file with tab-separated merger definitions")
+    parser.add_argument("--debug", action="store_true", help="whether corpus should be dumped after pre-processing")
     args = parser.parse_args()
 
     # Build output file names.
     fn_corpus   = args.outprefix + "_bow.mm"
     fn_dict     = args.outprefix + ".dict"
     fn_dict_txt = args.outprefix + ".dict.txt"
+    
+    if args.debug:
+        fn_debug = args.outprefix + ".debug"
+    else:
+        fn_debug = None
 
-    # Check input file.
+    # Check input files.
     if not os.path.exists(args.infile):
         sys.exit("Input file does not exist: " + args.infile)
 
+    if args.mergers is not None and not os.path.exists(args.mergers):
+        sys.exit("Merger definition file does not exist: " + args.mergers)
+
     # Check (potentially erase) output files.
-    for fn in [fn_corpus, fn_dict]:
-        if os.path.exists(fn):
+    for fn in [fn_corpus, fn_dict, fn_debug]:
+        if fn is not None and os.path.exists(fn):
             if args.erase:
                 try:
                     os.remove(fn)
@@ -63,16 +73,29 @@ def main():
                     il = [x.decode('utf-8').strip() for x in f.readlines()]
                 filters.append([int(l[0]), l[1], il])
 
+    # Read mergers file.
+    mergers = list()
+    if args.mergers is not None:
+        for m in open(args.mergers):
+            lm = m.strip().decode('utf-8').split('\t')
+            mergers.append([int(lm[0]), lm[1], [int(x) for x in lm[2].split(',')]  ])
+
     # Create dictionary.
-    c=CowcorpText(args.infile, columns, filters)
+    c=CowcorpText(args.infile, columns, filters, mergers)
     dictionary = corpora.Dictionary(doc for doc in c)
     dictionary.save(fn_dict)
     dictionary.save_as_text(fn_dict_txt)
 
     # Create matricified corpus.
-    vc=CowcorpVec(args.infile, columns, filters, dictionary)
+    vc=CowcorpVec(args.infile, columns, filters, mergers, dictionary)
     corpora.MmCorpus.serialize(fn_corpus, vc)
 
+    # If debug dump was requested, do it.
+    if args.debug:
+        dc=CowcorpText(args.infile, columns, filters, mergers)
+        f_debug = open(fn_debug, 'wb')
+        for document in dc:
+            f_debug.write((' ').join(document).encode('utf-8') + '\n\n')
 
 if __name__ == "__main__":
     main()

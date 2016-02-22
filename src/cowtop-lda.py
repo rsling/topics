@@ -77,24 +77,6 @@ def main():
         mtf.write('document' + str(i) + '\t' + '\t'.join([' '.join([str(x[0]), str(x[1])]) for x in lda.get_document_topics(doc)]) + '\n')
         i += 1
 
-
-#    # Extract the doc-top matrix.
-#    f = open(fn_matrix, 'wb')
-#    f.write('%\n% Sparse topic:domain matrix written by cowtop tools.\n%\n')
-#    f.write('% Algorithm  : LDA\n')
-#    f.write('% Corpus     : ' + os.path.basename(args.corpus) + '\n')
-#    f.write('%\n\n')
-#
-#    f.write('@RELATION ' + args.outprefix + '\n\n')
-#    zfill_len = len(str(args.num_topics-1))
-#    for t in range(0, args.num_topics):
-#        f.write('@ATTRIBUTE topic' + str(t).zfill(zfill_len) + ' REAL\n')
-#    f.write('\n@DATA\n')
-#
-#    for doc in corpus:
-#        print(lda.get_document_topics(doc))
-
-
 if __name__ == "__main__":
     main()
 

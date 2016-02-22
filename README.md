@@ -12,3 +12,16 @@ python src/cowtop-vectorize.py data/cattle13.xml data/cattle13 2,1 --erase --fil
 ```
 python src/cowtop-merge.py data/cattle13.dict data/cattle13.dict data/cattle13_bow.mm data/cattle13_bow.mm data/joint --erase
 ```
+
+3. Example call for running LDA on vectorized corpora:
+
+```
+python src/cowtop-lda.py data/cattle13_bow.mm data/cattle13.dict data/cattle13 20 --erase
+```
+
+4. The same if an LDA model has already been created:
+
+```
+python src/cowtop-lda.py data/cattle13_bow.mm data/cattle13.dict data/cattle13 20 --erase --resume data/cattle13.lda
+```
+

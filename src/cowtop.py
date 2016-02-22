@@ -81,7 +81,7 @@ class CowcorpText:
 
         # Execute the token mergers if there are any defined.
         for merger in self.mergers:
-            b = self.merge_on_identity(b, merger[0], merger[1], merger[2])
+            b = self.merge_if_identical(b, merger[0], merger[1], merger[2])
 
         # Apply filters.
         for filt in self.filters: 
@@ -182,11 +182,11 @@ class CowcorpText:
         else:
             return "_".join([token[i] for i in self.selectors])
 
-    # This function merges the merge fields where the check fields are
-    # identical in running sequences. (I guess that's pretty
-    # incomprehensible. Oh well... Look at the comments and the
-    # output.)
-    def merge_on_identity(self, document, check, value, merge):
+    # This function merges the merge fields where the check field is
+    # identical and equal to value in running token sequences. Sort
+    # of like a more complex RLE with merging. (I guess that's pretty
+    # incomprehensible. Look at the comments and the output.)
+    def merge_if_identical(self, document, check, value, merge):
 
         # Create new outpu list.
         o = list()

@@ -12,10 +12,10 @@ echo "[ COW / DeReKo topic modelling experiments demo ]"
 
 mkdir -p ${OUT}
 
-# echo
-# echo "Preparing BOW corpus and lexicon."
-# time python src/cowtop-vectorize.py ${IN}/cattle13.xml ${OUT}/cattle13 2 --erase --filters ${IN}/filters.tab --mergers ${IN}/mergers.tab --debug
-# 
+echo
+echo "Preparing BOW corpus and lexicon."
+time python src/cowtop-vectorize.py ${IN}/cattle13.xml ${OUT}/cattle13 2 --erase --filters ${IN}/filters.tab --mergers ${IN}/mergers.tab --debug --dictionary ${OUT}/cattle13.dict
+ 
 # echo
 # echo "Running LDA."
 # time python src/cowtop-lda.py ${OUT}/cattle13_bow.mm ${OUT}/cattle13.dict ${OUT}/cattle13_lda ${NUM_TOPICS} --erase

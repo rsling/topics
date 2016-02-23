@@ -15,6 +15,7 @@ def main():
     parser.add_argument('infile', help='COW-XML input file')
     parser.add_argument('outprefix', help='prefix for output files')
     parser.add_argument('columns', help='comma-separated list of columns to use (0-based)')
+    parser.add_argument('--dictionary', help='use a pre-existing dictionary')
     parser.add_argument("--erase", action='store_true', help="erase outout files if present")
     parser.add_argument("--filters", type=str, help="file with tab-separated filter definitions")
     parser.add_argument("--mergers", type=str, help="file with tab-separated merger definitions")
@@ -23,23 +24,38 @@ def main():
 
     # Build output file names.
     fn_corpus   = args.outprefix + "_bow.mm"
-    fn_dict     = args.outprefix + ".dict"
-    fn_dict_txt = args.outprefix + ".dict.txt"
-    
+
+    # We only need dictionary output file names if we are not reusing.
+    if not args.dictionary:
+        fn_dict     = args.outprefix + ".dict"
+        fn_dict_txt = args.outprefix + ".dict.txt"
+   
+    # Debug file name (dump preprocessed corpus).
     if args.debug:
         fn_debug = args.outprefix + ".debug"
     else:
         fn_debug = None
 
     # Check input files.
-    if not os.path.exists(args.infile):
-        sys.exit("Input file does not exist: " + args.infile)
+    infiles = [args.infile]
+    if args.mergers:
+        infiles.append(args.mergers)
+    if args.dictionary:
+        infiles.append(args.dictionary)
 
-    if args.mergers is not None and not os.path.exists(args.mergers):
-        sys.exit("Merger definition file does not exist: " + args.mergers)
+    for fn in infiles:
+        if not os.path.exists(fn):
+            sys.exit("Input file does not exist: " + fn)
 
     # Check (potentially erase) output files.
-    for fn in [fn_corpus, fn_dict, fn_dict_txt, fn_debug]:
+    outfiles = [fn_corpus]
+    if args.debug:
+        outfiles.append(fn_debug)
+
+    if not args.dictionary:
+        outfiles.append(fn_dict)
+        outfiles.append(fn_dict_txt)
+    for fn in outfiles:
         if fn is not None and os.path.exists(fn):
             if args.erase:
                 try:
@@ -83,14 +99,18 @@ def main():
             lm = m.strip().decode('utf-8').split('\t')
             mergers.append([int(lm[0]), lm[1], [int(x) for x in lm[2].split(',')]  ])
 
-    # Create dictionary.
-    c=CowcorpText(args.infile, columns, filters, mergers)
-    dictionary = corpora.Dictionary(doc for doc in c)
-    dictionary.save(fn_dict)
-    dictionary.save_as_text(fn_dict_txt)
+    # Create dictionary or load existing one.
+    if not args.dictionary:
+        c=CowcorpText(args.infile, columns, filters, mergers)
+        dictionary = corpora.Dictionary(doc for doc in c)
+        dictionary.save(fn_dict)
+        dictionary.save_as_text(fn_dict_txt)
+        # TODO: parametrize and re-enable; also make option available in merge tool.
+        # dictionary.filter_extremes(5, 0.4)
 
-    # TODO: parametrize and re-enable; also make option available in merge tool.
-    # dictionary.filter_extremes(5, 0.4)
+    else:
+        dictionary = corpora.dictionary.Dictionary.load(args.dictionary)
+
 
     # Create matricified corpus.
     vc=CowcorpVec(args.infile, columns, filters, mergers, dictionary)

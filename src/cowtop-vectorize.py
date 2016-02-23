@@ -89,6 +89,9 @@ def main():
     dictionary.save(fn_dict)
     dictionary.save_as_text(fn_dict_txt)
 
+    # TODO: parametrize and re-enable; also make option available in merge tool.
+    # dictionary.filter_extremes(5, 0.4)
+
     # Create matricified corpus.
     vc=CowcorpVec(args.infile, columns, filters, mergers, dictionary)
     corpora.MmCorpus.serialize(fn_corpus, vc)

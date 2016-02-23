@@ -16,9 +16,9 @@ def main():
     parser.add_argument('outprefix', help='prefix for output files (model and TSV)')
     parser.add_argument('num_topics', type=int, help='number of topics to infer')
     parser.add_argument('--resume', help='specifiy a previously created LSI model')
-    parser.add_argument('--params', help='comma-separated list of parameters to pass to LSI')
     parser.add_argument('--erase', action='store_true', help="erase outout files if present")
     args = parser.parse_args()
+
 
     # Sanity-check num_topics.
     if args.num_topics < 2:
@@ -67,7 +67,7 @@ def main():
         tfidf = models.TfidfModel(corpus)
         tfidf.save(fn_tfidf)
         corpus_tfidf = tfidf[corpus]
-        lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=args.num_topics)
+        lsi = models.LsiModel(corpus_tfidf, onepass=False, power_iters=4, extra_samples=300, id2word=dictionary, num_topics=args.num_topics)
         lsi.save(fn_model)
 
     # Dump topics.

@@ -15,10 +15,21 @@ def main():
     parser.add_argument('dictionary', help='serialized Gensim dictionary matching corpus')
     parser.add_argument('outprefix', help='prefix for output files (model and TSV)')
     parser.add_argument('num_topics', type=int, help='number of topics to infer')
+    parser.add_argument('--alpha', help='alpha parameter; only "asymmetric" or "auto"')
+    parser.add_argument('--etaauto', action='store_true', help="estimate asymmetric priors")
     parser.add_argument('--resume', help='specifiy a previously created LDA model')
-    parser.add_argument('--params', help='comma-separated list of parameters to pass to LDA')
     parser.add_argument('--erase', action='store_true', help="erase outout files if present")
     args = parser.parse_args()
+
+    # Sanity-check parameters.
+    if args.alpha and not (args.alpha == 'asymmetric' or args.alpha == 'auto'):
+        sys.exit('Illegal value for alpa.')
+
+    if args.etaauto:
+        eta="auto"
+    else:
+        eta=None
+
 
     # Sanity-check num_topics.
     if args.num_topics < 2:
@@ -61,7 +72,7 @@ def main():
         lda = models.LdaModel.load(args.resume, mmap='r')
     else:
         # Run LDA. TODO: Pass parameters.
-        lda = models.LdaModel(corpus, id2word=dictionary, num_topics=args.num_topics)
+        lda = models.LdaModel(corpus, alpha=args.alpha, eta=eta, id2word=dictionary, num_topics=args.num_topics)
         lda.save(fn_model)
 
     # Dump topics.
@@ -73,8 +84,10 @@ def main():
     # Dump document-topic associations. Human-readable.
     mtf = open(fn_matrix_txt, 'w')
     i = 0
-    for doc in corpus:
-        mtf.write('document' + str(i) + '\t' + '\t'.join([' '.join([str(x[0]), str(x[1])]) for x in lda.get_document_topics(doc)]) + '\n')
+    corpus_lda = lda[corpus]
+    for doc in corpus_lda:
+        mtf.write('document' + str(i) + '\t' + '\t'.join([' '.join([str(x[0]), str(x[1])]) for x in doc]) + '\n')
+#        mtf.write('document' + str(i) + '\t' + '\t'.join([' '.join([str(x[0]), str(x[1])]) for x in lda.get_document_topics(doc)]) + '\n')
         i += 1
 
 if __name__ == "__main__":

@@ -36,9 +36,9 @@ class CowcorpText:
         self.docend = re.compile(r'^</doc> *$')
 
         # Check if header is correct.
-        l = self.sread()
-        if not l == u'<?xml version="1.0" encoding="UTF-8"?>':
-            raise BaseException('XML declaration missing.')
+#        l = self.sread()
+#        if not l == u'<?xml version="1.0" encoding="UTF-8"?>':
+#            raise BaseException('XML declaration missing.')
 
 
 

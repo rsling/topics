@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--erase", action='store_true', help="erase outout files if present")
     parser.add_argument("--filters", type=str, help="file with tab-separated filter definitions")
     parser.add_argument("--mergers", type=str, help="file with tab-separated merger definitions")
+    parser.add_argument("--minlength", type=int, help="minimal token length of documents")
     parser.add_argument("--debug", action="store_true", help="whether corpus should be dumped after pre-processing")
     args = parser.parse_args()
 
@@ -106,7 +107,7 @@ def main():
         dictionary.save(fn_dict)
         dictionary.save_as_text(fn_dict_txt)
         # TODO: parametrize and re-enable; also make option available in merge tool.
-        dictionary.filter_extremes(2, 0.75)
+        # dictionary.filter_extremes(2, 0.75)
 
     else:
         dictionary = corpora.dictionary.Dictionary.load(args.dictionary)

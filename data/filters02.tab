@@ -1,0 +1,9 @@
+2	copyif	0	(unknown)
+2	entities
+2	alpha
+2	length	4	30
+2	lower
+2	blacklist	data/lemma.blacklist
+1	lower
+1	truncate	2
+1	whitelist	data/nnnevvad.whitelist

@@ -19,7 +19,7 @@ def main():
     parser.add_argument("--erase", action='store_true', help="erase outout files if present")
     parser.add_argument("--filters", type=str, help="file with tab-separated filter definitions")
     parser.add_argument("--mergers", type=str, help="file with tab-separated merger definitions")
-    parser.add_argument("--minlength", type=int, help="minimal token length of documents")
+    parser.add_argument("--minlength", type=int, default=-1, help="minimal token length of documents")
     parser.add_argument("--debug", action="store_true", help="whether corpus should be dumped after pre-processing")
     args = parser.parse_args()
 
@@ -102,7 +102,7 @@ def main():
 
     # Create dictionary or load existing one.
     if not args.dictionary:
-        c=CowcorpText(args.infile, columns, filters, mergers)
+        c=CowcorpText(args.infile, columns, filters, mergers, args.minlength)
         dictionary = corpora.Dictionary(doc for doc in c)
         dictionary.save(fn_dict)
         dictionary.save_as_text(fn_dict_txt)
@@ -114,12 +114,12 @@ def main():
 
 
     # Create matricified corpus.
-    vc=CowcorpVec(args.infile, columns, filters, mergers, dictionary)
+    vc=CowcorpVec(args.infile, columns, filters, mergers, args.minlength, dictionary)
     corpora.MmCorpus.serialize(fn_corpus, vc)
 
     # If debug dump was requested, do it.
     if args.debug:
-        dc=CowcorpText(args.infile, columns, filters, mergers)
+        dc=CowcorpText(args.infile, columns, filters, mergers, args.minlength)
         f_debug = open(fn_debug, 'wb')
         for document in dc:
             f_debug.write((' ').join(document).encode('utf-8') + '\n\n')

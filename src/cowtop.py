@@ -8,8 +8,8 @@ from gensim import corpora
 
 class CowcorpVec:
 
-    def __init__(self, filename, selectors, filters, mergers, dictionary):
-        self.corpus = CowcorpText(filename, selectors, filters, mergers)
+    def __init__(self, filename, selectors, filters, mergers, minlength, dictionary):
+        self.corpus = CowcorpText(filename, selectors, filters, mergers, minlength)
         self.dictionary = dictionary
 
     def __iter__(self):
@@ -22,13 +22,14 @@ class CowcorpText:
     """A class that reads COW-XML document by document for topic modeling"""
 
 
-    def __init__(self, filename, selectors, filters, mergers):
+    def __init__(self, filename, selectors, filters, mergers, minlength):
         self.infilename = filename
         self.infile = open(self.infilename)
 
         self.selectors = selectors
         self.filters = filters
         self.mergers = mergers
+        self.minlength = minlength
 
         self.count = 1
 
@@ -49,69 +50,72 @@ class CowcorpText:
 
     def next(self):
 
-        # At first, document is empty.
-        b = list()
-
-        # Find doc start.
-        while True: 
-            l = self.sread()
-            if l:
-                if self.docstart.match(l):
-                    b.append(l)
-                    break
-            else:
-                raise StopIteration
-        
-        # If doc start was found, buffer until end of doc.
         while True:
-            l = self.sread()
+            # At first, document is empty.
+            b = list()
+
+            # Find doc start.
+            while True: 
+                l = self.sread()
+                if l:
+                    if self.docstart.match(l):
+                        b.append(l)
+                        break
+                else:
+                    raise StopIteration
             
-            if l:
-                b.append(l)
-                if self.docend.match(l):
-                    break
-            else:
-                raise StopIteration
+            # If doc start was found, buffer until end of doc.
+            while True:
+                l = self.sread()
+                
+                if l:
+                    b.append(l)
+                    if self.docend.match(l):
+                        break
+                else:
+                    raise StopIteration
 
-        # There was a document. Increase counter.
-        self.count = self.count+1
+            # There was a document. Increase counter.
+            self.count = self.count+1
 
-        # Tokenize. Returns list of tokens, each token is a list of annotations.
-        b = self.tokenize(b)
+            # Tokenize. Returns list of tokens, each token is a list of annotations.
+            b = self.tokenize(b)
 
-        # Execute the token mergers if there are any defined.
-        for merger in self.mergers:
-            b = self.merge_if_identical(b, merger[0], merger[1], merger[2])
+            # Execute the token mergers if there are any defined.
+            for merger in self.mergers:
+                b = self.merge_if_identical(b, merger[0], merger[1], merger[2])
 
-        # Apply filters.
-        for filt in self.filters: 
-            if filt[1] == "alpha":
-                b = self.filter_alpha(b, filt[0])
-            elif filt[1] == "lower":
-                b = self.filter_lower(b, filt[0])
-            elif filt[1] == "entities":
-                b = self.filter_entities(b, filt[0])
-            elif filt[1] == "truncate":
-                b = self.filter_truncate(b, filt[0], filt[2])
-            elif filt[1] == "length":
-                b = self.filter_length(b, filt[0], filt[2], filt[3])
-            elif filt[1] == "copyif":
-                b = self.filter_copyif(b, filt[0], filt[2], filt[3])
-            elif filt[1] == "copyif2":
-                b = self.filter_copyif2(b, filt[0], filt[2], filt[3], filt[4], filt[5])
-            elif filt[1] == "blacklist":
-                b = self.filter_blacklist(b, filt[0], filt[2])
-            elif filt[1] == "whitelist":
-                b = self.filter_whitelist(b, filt[0], filt[2])
-            else:
-                raise BaseException('Filter type unknown: ' + filt[1])
+            # Apply filters.
+            for filt in self.filters: 
+                if filt[1] == "alpha":
+                    b = self.filter_alpha(b, filt[0])
+                elif filt[1] == "lower":
+                    b = self.filter_lower(b, filt[0])
+                elif filt[1] == "entities":
+                    b = self.filter_entities(b, filt[0])
+                elif filt[1] == "truncate":
+                    b = self.filter_truncate(b, filt[0], filt[2])
+                elif filt[1] == "length":
+                    b = self.filter_length(b, filt[0], filt[2], filt[3])
+                elif filt[1] == "copyif":
+                    b = self.filter_copyif(b, filt[0], filt[2], filt[3])
+                elif filt[1] == "copyif2":
+                    b = self.filter_copyif2(b, filt[0], filt[2], filt[3], filt[4], filt[5])
+                elif filt[1] == "blacklist":
+                    b = self.filter_blacklist(b, filt[0], filt[2])
+                elif filt[1] == "whitelist":
+                    b = self.filter_whitelist(b, filt[0], filt[2])
+                else:
+                    raise BaseException('Filter type unknown: ' + filt[1])
 
-        # Token mergers.
-        # TODO For example, join sequences of I-PER tokens ("helmutkohl" instead of "helmut kohl")
+            # Token mergers.
+            # TODO For example, join sequences of I-PER tokens ("helmutkohl" instead of "helmut kohl")
 
-        # Select columns.
-        b = [self.select(token) for token in b]
+            # Select columns.
+            b = [self.select(token) for token in b]
 
+            if not len(b) < self.minlength:
+                break
         return b
 
 

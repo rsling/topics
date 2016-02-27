@@ -36,12 +36,6 @@ class CowcorpText:
         self.docstart = re.compile(r'^<doc .+> *$')
         self.docend = re.compile(r'^</doc> *$')
 
-        # Check if header is correct.
-#        l = self.sread()
-#        if not l == u'<?xml version="1.0" encoding="UTF-8"?>':
-#            raise BaseException('XML declaration missing.')
-
-
 
     # ITERATOR STUFF
 
@@ -107,9 +101,6 @@ class CowcorpText:
                     b = self.filter_whitelist(b, filt[0], filt[2])
                 else:
                     raise BaseException('Filter type unknown: ' + filt[1])
-
-            # Token mergers.
-            # TODO For example, join sequences of I-PER tokens ("helmutkohl" instead of "helmut kohl")
 
             # Select columns.
             b = [self.select(token) for token in b]

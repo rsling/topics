@@ -27,7 +27,7 @@ set -u
 FILTERS=( "data/filters01.tab" "data/filters02.tab" )
 SELECTORS=( "2" "2,1" "0" )
 MERGERS="data/mergers.tab"
-MIN_DOCLENGTH=100
+MIN_DOCLENGTH=-1
 
 # WORK:
 

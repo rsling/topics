@@ -89,7 +89,7 @@ def main():
 
         # If one files is exhausted and the other one is not, something's wrong.
         if (not t) != (not d):
-            sys.exit('Files are not of equal length at index '+ str(i) + '. Abort.')
+            sys.exit('Files\n' + args.topics + '\n' + args.domains + '\nare not of equal length at index '+ str(i) + '. Abort.')
 
         if end_t or end_d:
             break

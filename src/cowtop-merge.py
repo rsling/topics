@@ -43,8 +43,8 @@ def main():
             else:
                 sys.exit("Output file already exists: " + fn)
 
-    # Craeful, dictionary1 is modified in place, but the call
-    # returns a transformation object to adapt dict2 corpora to
+    # Careful, dictionary1 is modified in place, but the call
+    # returns a transformation object to adapt dict2-based corpora to
     # new modified dict1.
     dictionary1 = corpora.dictionary.Dictionary.load(args.dictionary1)
     dictionary2 = corpora.dictionary.Dictionary.load(args.dictionary2)

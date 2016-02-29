@@ -60,7 +60,53 @@
 
 \section{Introduction}
 
-\cite{KupietzEa2010}
+Why topic domain?
+
+Automatic meta data: desirable not JUST for web data.
+
+Short comments on register scene and poor results in recent Globbe paper.
+
+Mention corpus comparison as important field: Kilgarriff, WCC, "Biemann et al."
+
+\section{Gold standard Data}
+
+Corpora \cite{KupietzEa2010}, SchäBi 2012, Schä 2015
+
+Annotation scheme: Sharoff; mention that it was developed in repeated annotation processes based on annotator feedback; mention that design goal was roughly 10 to 20 topic domains
+
+\section{Experiment Setup}
+
+Pre-processing
+
+Algorithms (LSI/LDA)
+
+Gold and plus versions
+
+Filters and lexicon thresholds
+
+Numbers of topics
+
+SVM vs. Trees; SVM kernel selection
+
+Elimination of very small topic domains
+
+\section{Results}
+
+Accuracy and $\kappa$ for Cow, Dereko, Coreko and plus variants
+
+4 plots
+
+\section{Conclusions and Outlook}
+
+The results presented here are preliminary, but highly encouraging (over 90\% accuracy on training data and 70\% accuracy in cross-validation on some data sets), and they indicate the route to be taken in further experiments.
+First of all, there appears to be a solid connection between induced topic distributions and externally defined topic domains.
+The relative poor performance in cross-validation experiments indicates that larger gold standard data sets are required.
+Such data sets are currently being annotated.
+Secondly, there appears to be a significant difference in the topic distribution and the topic\slash domain mapping in newspaper and web corpora.
+This is indicated by the drop in classification accuracy when newspaper and web data are pooled.
+As such, 
+In future experiments, it remains to be discovered whether larger corpora can alleviate this divergence, finally enabling us to decide whether separate models are required or joint models can be trained.
+Thirdly, the highly skewed topic distributions in both newspaper and web data sets as well as comments from annotators indicate that splitting up some topic domains might lead to a better fit.
 
 \bibliography{coreko}
 \bibliographystyle{acl2016}

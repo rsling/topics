@@ -1,10 +1,11 @@
 #!/bin/bash
 
-DIRS=( "data/coreko/corekogold" )
+# Exp. corekogold was run by hand previously!
+DIRS=$(ls -d -1 data/coreko/corekoplus??X/)
 PARAM01=("filters01" "filters02")
 PARAM02=("s0" "s2" "s2+1")
 TOPICS=`seq -w 20 10 90`
-RESULTS="coreko.tsv"
+RESULTS="corekoplus_lax.tsv"
 NUM_TARGET=1756
 ANNO="data/coreko.domains2.tsv"
 OUT="run"
@@ -24,7 +25,7 @@ do
 	subexp="${pref}_${p1}_${p2}_${topics}"
 	bow="${dir}/${p1}_${p2}_bow.mm"
 	dict="${dir}/${p1}_${p2}.dict"
-	res=`./exp.sh ${subexp} ${bow} ${dict} ${ANNO} ${OUT} ${topics} ${NUM_TARGET} ${FILTER}`
+	res=`./explax.sh ${subexp} ${bow} ${dict} ${ANNO} ${OUT} ${topics} ${NUM_TARGET} ${FILTER}`
         echo ${res}
         echo -e ${res} >> ${RESULTS}
       done

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 BASE="data/coreko"
-GOLD="derekogold"
-PLUS="derekoplus"
+GOLD="corekogold"
+PLUS="corekoplus"
 PLUSSES=`seq -w 1 10`
 
 PARAM01=("filters01" "filters02")

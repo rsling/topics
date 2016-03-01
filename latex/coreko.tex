@@ -83,34 +83,35 @@ The gold standard corpora were prepared by manually annotating documents from tw
 The first data set consists of 870 randomly selected documents from DECOW14A, a crawled web corpus \cite{SchaeferBildhauer2012a,Schaefer2015b}.
 The second data set contains 886 documents randomly selected from \textit{DeReKo}, a corpus composed predominantly of newspaper texts \cite{KupietzEa2010}. 
 Our choice of corpora was motivated by fact that we expected some overlap w.\,r.\,t.\ to topics covered in them, but also some major differences. 
-The documents in these gold standard corpora were classified according to a custom annotation scheme for topic domain which builds on work by \cite{Sharoff2006}.
+The documents in these gold standard corpora were classified according to a custom annotation scheme for topic domain which builds on previous work \cite{Sharoff2006}.
 The design goal was to a have moderate number (about 10--20) of topic domains that can be thought of as subsuming more fine-grained topic distinctions.
 We developed the annotation scheme in a cyclic fashion, taking into account annotator feedback after repeated annotation processes.
-In this experiment, we use a version that distinguishes 13 topic domains, namely \textit{Science}, \textit{Technology}, \textit{Medical}, \textit{Public Life and Infrastructure}, \textit{Politics and Society}, \textit{History}, \textit{Business}, \textit{Law}, \textit{Fine Arts},  \textit{Philosophy}, \textit{Beliefs},  \textit{Life and Leisure}, \textit{Individuals}.
+Currently, we use a version that distinguishes 13 topic domains, namely \textit{Science}, \textit{Technology}, \textit{Medical}, \textit{Public Life and Infrastructure}, \textit{Politics and Society}, \textit{History}, \textit{Business}, \textit{Law}, \textit{Fine Arts},  \textit{Philosophy}, \textit{Beliefs},  \textit{Life and Leisure}, \textit{Individuals}.
 
 \section{Experiment Setup}
 \label{sec:experiment}
 
 \begin{figure*}[h]
   \centering
-  \includegraphics[width=\textwidth, height=6.8cm]{graphics/cow.pdf}
+  \includegraphics[width=\textwidth, height=6.4cm]{graphics/cow.pdf}
   \caption{Accuracy with different numbers of topics for COW-only dataset}
   \label{fig:cow}
 \end{figure*}
 
 Our general approach was to infer a topic distribution over a corpus using topic modelling algorithms as a first step.
-In the second step, we used the resulting document--topic matrix to infer topic domains for the documents from their assignment to the topics.
+In the second step, we used the resulting document--topic matrix to learn topic domain distinctions for the documents from their assignment to the topics.
 To achieve this, supervised classifiers were used.
-Through permutation of all available classifiers (with the appropriate capabilities) in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate.
+Through permutation of virtually all available classifiers (with the appropriate capabilities) in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate.
 Due to minimally higher accuracy, SVMs were used in all subsequent experiments.
 Some topic domains occurred only rarely in the gold standard, and we did not expect the classifier to be able to generalize well from just a few instances.
 Therefore, we evaluated the results on the \textit{full} data set and a \textit{reduced} data set with rare categories removed.
 
 For the underlying topic inference, we used LSI and LDA as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
-In previous experiments, the LDA topic distribution was unstable, and results generally unusable, probably due to the comparatively small corpora used.
+In previous experiments, the LDA topic distribution was unstable, and results were generally unusable, which was probably due to the comparatively small corpora used.
 We consequently only report LSI results here and will return to LDA in further experiments.
 However, for any topic modelling algorithm, our corpora can be considered small.
 Therefore, we inferred topics not just based on the annotated gold standard data sets, but also on larger datasets which consisted of the gold standard mixed with additional documents from the source corpora.
+For the training of the SVM classifiers, the documents that had been mixed in were removed again.
 We systematically increased the number of mixed-in document in increments of roughly half as many documents as contained in the gold standard corpora.
 
 We pre-processed both corpora in exactly the same way (tokenization, lemmatization, POS-tagging, named entity recognition).
@@ -124,7 +125,7 @@ Using the lemma and the simplified POS tags (such as \textit{kindergarten\_nn}) 
 
 \begin{figure*}[h]
   \centering
-  \includegraphics[width=\textwidth, height=6.8cm]{graphics/dereko.pdf}
+  \includegraphics[width=\textwidth, height=6.4cm]{graphics/dereko.pdf}
   \caption{Accuracy with different numbers of topics for DeReKo-only dataset}
   \label{fig:dereko}
 \end{figure*}
@@ -135,8 +136,8 @@ Using the lemma and the simplified POS tags (such as \textit{kindergarten\_nn}) 
     \hline
     \textbf{Corpus} & \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure} \\
     \hline
-    COW & $\sim$3,200 & token & 20 & 68.765\% & 0.688 & 0.688 & 0.674 \\
-    DeReKo & $\sim$3,600 & lemma + POS & 40 & 72.162\% & 0.716 & 0.722 & 0.686 \\
+    COW & 3,200 & token & 20 & 68.765\% & 0.688 & 0.688 & 0.674 \\
+    DeReKo & 3,600 & lemma + POS & 40 & 72.162\% & 0.716 & 0.722 & 0.686 \\
     COW + DeReKo & 0 & lemma + POS & 30 & 51.872\% & 0.431 & 0.519 & 0.417 \\ 
     \hline
   \end{tabular}}
@@ -145,7 +146,7 @@ Using the lemma and the simplified POS tags (such as \textit{kindergarten\_nn}) 
 \end{table*}
 
 Figure~\ref{fig:cow} shows the classification accuracy using 20 to 90 LSI topics.
-Each line corresponds to one sub-experiment (slightly different pre-processing options), and the lines form well distinguishable bands.
+Each line corresponds to one sub-experiment (with slightly different pre-processing options), and the lines form well distinguishable bands.
 The highest accuracy is achieved with the reduced set of topic domains (minor categories removed) when the evaluation is performed on the training data.
 The full set of topic domains leads to a drop in accuracy of about 5\%.
 The two lower bands show the classification accuracy in a 10-fold cross-validation (10CV), again with the reduced set of topic domains performing roughly 5\% better.
@@ -156,7 +157,7 @@ The four panels show results based on different topic models.
 Panel (a) uses a topic model inferred only from the 870 gold standard documents.
 Results in panel (b) through (d) are based on topic models inferred on larger data sets as described in Section~\ref{sec:experiment}.
 In the experiment reported in panel (d), for example, 1,200 documents were added to the 870 gold standard documents.
-While the results in the 10CV are slightly improved by mixing in more documents, the maximum achieved accuracy does not significantly change.
+While the results of the 10CV are slightly improved by mixing in more documents, the maximum achieved accuracy does not change significantly.
 We mixed in up to 8,000 additional documents (not all results shown here) with no significant change compared to panel (d) in Figure~\ref{fig:cow}.
 We consider the maximum 10CV accuracy with the reduced set of topic domains most informative w.\,r.\,t.\ the potential quality of the classifier, and we report it in Table~\ref{tab:quality}.
 
@@ -166,7 +167,7 @@ We consider the maximum 10CV accuracy with the reduced set of topic domains most
 
 \begin{figure*}[h]
   \centering
-  \includegraphics[width=\textwidth, height=6.8cm]{graphics/coreko.pdf}
+  \includegraphics[width=\textwidth, height=6.4cm]{graphics/coreko.pdf}
   \caption{Accuracy with different numbers of topics for COW+DeReKo dataset}
   \label{fig:coreko}
 \end{figure*}
@@ -175,17 +176,18 @@ A parallel plot for the DeReKo data is shown in Figure~\ref{fig:coreko}, and max
 The picture is essentially the same as for the COW data set.
 The added accuracy (3.397\% according to Table~\ref{tab:quality}) is a side effect of the more skewed distribution of topic domains in the DeReKo gold standard data.
 The $\kappa$ statistic for the COW and DeReKo results from Table~\ref{tab:quality} of $\kappa_{\textrm{\tiny COW}}=0.575$ and $\kappa_{\textrm{\tiny DeReKo}}=0.569$ show that achieving a higher accuracy for the COW data is actually harder than with the DeReKo data.
+
 When the COW and DeReKo data are pooled, however, quality drops below any acceptable level, cf.\ Figure~\ref{fig:coreko} and Table~\ref{tab:quality}.
 Mixing in more documents improves the evaluation results on the training data, but the 10CV results remains steady at around 50\%.
 This is remarkable because larger training data sets should lead to increased, not degraded accuracy.
 While a deeper analysis of the LSI topic distributions remains to be undertaken, it is evident what causes these below average results on the side of the SVM classifier when looking at the confusion matrices, cf.\ Table~\ref{tab:confusion}.
-The dominant modal category is \textit{Life and Leisure} in the annotated COW gold standard (panel a).
+The dominant modal category is \textit{Life and Leisure} in the COW gold standard (panel a).
 However, the distribution of topic domains is not too skewed, and the confusion is distributed roughly uniformly across categories.
 The DeReKo data set (panel b) consists mainly of two clusters of documents in the domains \textit{Politics and Society} (276 of 837) and \textit{Life and Leisure} (350 of 837).
 In the joint data set (panel c), this leads to a situation in which the classifier tips over and assigns most documents to \textit{Life and Leisure} and the rest mostly to \textit{Politics and Society}.
 This indicates that for such skewed distributions of topic domains, larger gold standard data sets are required.
 It is not indicative of a general failure of the method or a general incompatibility of newspaper and web data in the context of our method.
-The confusion matrices in Table~\ref{tab:confusion} definitely show, however, that topic domains are represented quite differently in newspaper and web corpora.
+The confusion matrices in Table~\ref{tab:confusion} definitely illustrate, however, that topic domains are represented quite differently in newspaper and web corpora.
 
 \begin{table*}[h]
   \centering
@@ -240,7 +242,7 @@ The confusion matrices in Table~\ref{tab:confusion} definitely show, however, th
 \section{Conclusions and Outlook}
 \label{sec:conclusions}
 
-The results presented here are preliminary but highly encouraging, and they indicate the route to be taken in further experiments.
+The results presented here are preliminary but highly encouraging, and they clearly indicate the route to be taken in further experiments.
 First of all, there appears to be a connection between induced topic distributions and more general topic domains.
 The decreased performance in cross-validation experiments indicates that larger gold standard data sets are required.
 Such data sets are currently being annotated under our supervision.
@@ -248,7 +250,7 @@ Secondly, there appears to be a significant difference in the topic distribution
 This might be one of the reasons behind the collapse of the classifier when newspaper and web data are pooled.
 In future experiments, it remains to be discovered whether larger gold standard corpora can alleviate such problems.
 This will eventually enable us to decide whether separate models or joint models for the two kinds of corpora are more appropriate.
-Thirdly, the highly skewed topic distributions in both newspaper and web data sets indicate that splitting up some topic domains might lead to a better fit.
+Thirdly, the highly skewed topic distributions in both newspaper and web corpora indicate that splitting up some topic domains might lead to a better fit.
 In fact, annotators have independently asked whether splitting up \textit{Politics and Society} and \textit{Life and Leisure}---the critical categories which make the classifier collapse (cf.\ Section~\ref{sec:results})---could not be split up into at least two categories.
 
 \bibliography{coreko}

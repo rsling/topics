@@ -63,29 +63,31 @@
 
 \section{Introduction}
 \label{sec:introduction}
-In this paper, we describe preliminary encouraging results from an ongoing experiment wherein we classify large unstructured text corpora by \textit{topic domain}. \textit{Topic domain}, along with other high-level classifications such as genre/register, is among the meta data categories most sought for by (corpus-)\-linguists. From a corpus engineering perspective, it is therefore desirable to add as much linguistically relevant meta data as possible. While lack of reliable meta data in general is often mentioned as a major drawback of large, crawled web corpora, high-level annotations are not usually available for most traditional corpora either. Given the size of many modern corpora, these classifying tasks can only be accomplished in an automated fashion. However, poor results have recently been reported for automatic classification of genre/register (\textbf{REF Globbe}), and it is unclear if such categories can be operationalized to a point where a reliable annotation is even possible for humans. By contrast, automatic text categorization according to content (i.\,e., topic) has yielded much more promising results \cite{Sebastiani2002}, \textbf{perhaps something more recent?}). In this connection, while data-driven induction of topics has proven quite successful and is in many respects a more objective way of organizing a collection of documents by content \cite{Eagles1996}, the category labels that can be inferred from such topics do not necessarily meet the needs of linguists. In this paper, we explore to what extend a number of traditional, pre-established topic domains can be learned from the topics induced by Latent Semantic Indexing \cite{LandauerDumais1994,LandauerDumais1997} and Latent Dirichlet Allocation \cite{BleiEa2003}. Since we are classifying and comparing large German corpora with respect to their topic domain distributions, the paper also touches on the question of corpus comparison, which is another important issue in corpus linguistics, both for corpus builders and users    \cite{Kilgarriff2001,BiemannEa2013,SchaeferBildhauer2013de}.
+In this paper, we describe preliminary encouraging results from an ongoing experiment wherein we classify large unstructured text corpora by \textit{topic domain}.
+\textit{Topic domain}---along with other high-level classifications such as genre or register---is among the types of meta data most essential to many corpus linguists.
+Therefore, the lack of reliable meta data in general is often mentioned as a major drawback of large, crawled web corpora.
+It must be noted, however, that such high-level annotations are not usually available for large traditional corpora (such as newspaper corpora), either.
+Thus, given the size of many modern corpora (traditional or web corpora), automatic approaches to generating meta data are a general desideratum.
+When it comes to the automatic identification of register, even very recent approaches \cite{BiberEgbert2016} cannot deliver even near-satisfying accuracy, and it is unclear if categories such as register and genre can be operationalized such that a reliable annotation is even possible for humans.
+By contrast, automatic text categorization according to content (i.\,e., topic) has yielded much more promising results \cite{Sebastiani2002}.
+Data-driven induction of topics has proven quite successful and is in many respects a more objective way of organizing a collection of documents by content \cite{Eagles1996}.
+Still, the category labels that can be inferred from such topics are not necessarily useful for linguistic corpus users.
+In this paper, we explore the possibility of inferring a small, more traditional set of \textit{topic domains} (or \textit{subject areas}) from the topics induced in an unsupervised manner by Latent Semantic Indexing \cite{LandauerDumais1994,LandauerDumais1997,LSAHandbook} and Latent Dirichlet Allocation \cite{BleiEa2003}.
+Since we classify and compare two large German corpora with respect to their distribution of topic domains, our paper also contributes to the area of corpus comparison, another important issue in corpus linguistics \cite{Kilgarriff2001,BiemannEa2013}.
 
 
 \section{Gold standard Data}
 \label{sec:goldstandard}
 
-
-
-
-%We chose the multi-billion token newspaper corpus \textit{DeReKo} \cite{KupietzEa2010} and the equally large crawled web corpus DECOW14A \cite{SchaeferBildhauer2012a,Schaefer2015b}.
-%The choice of corpora is attractive because one usually expects newspaper corpora to be different from crawled web corpora.
-
-Gold standard data was prepared by manually annotating documents from two different corpora of German: 
-\begin{itemize}
-\item 870 randomly selected documents from DECOW12, a crawled web corpus \cite{SchaeferBildhauer2012a,Schaefer2015b}
-\item  886 documents randomly selected from \textit{DeReKo}, consisting predominantly of newspaper texts \cite{KupietzEa2010}. 
-\end{itemize}
-The choice of corpora was motivated by fact that we expected some overlap w.\,r.\,t.\ to topics covered in them, but also some important differences. 
-
- All documents were classified according to a custom annotation scheme, \textit{COWCat 2013} \textbf{(REF?)}, which builds on work by \cite{Sharoff2006} and provides guidelines for classifying text with respect to a number of dimensions. The design goal for the topic dimension was to a have moderate number (about 10--20) of topic \textit{domains} that can be thought of as subsuming more fine-grained topic distinctions. 
- %(The latter are not explicitly worked out, but some examples of these are given in the guidelines for annotators). 
- The scheme was developed in a cyclic fashion, taking into account annotator feedback after repeated annotation processes. The version used in this experiment distinguishes 13 topic domains (while the current version has undergone some revision, disambiguating and elaborating on some of these domains): \textit{Science}, \textit{Technology}, \textit{Medical}, \textit{Public Life and Infrastructure}, \textit{Politics and Society}, \textit{History}, \textit{Business}, \textit{Law}, \textit{Fine Arts},  \textit{Philosophy}, \textit{Beliefs},  \textit{Life and Leisure}, \textit{Individuals}.
-
+The gold standard corpora were prepared by manually annotating documents from two large German corpora.
+The first data set consists of 870 randomly selected documents from DECOW14A, a crawled web corpus \cite{SchaeferBildhauer2012a,Schaefer2015b}.
+The second data set contains 886 documents randomly selected from \textit{DeReKo}, a corpus composed predominantly of newspaper texts \cite{KupietzEa2010}. 
+Our choice of corpora was motivated by fact that we expected some overlap w.\,r.\,t.\ to topics covered in them, but also some major differences. 
+The documents in these gold standard corpora were classified according to a custom annotation scheme for topic domain which builds on work by \cite{Sharoff2006}
+The design goal was to a have moderate number (about 10--20) of topic domains that can be thought of as subsuming more fine-grained topic distinctions.
+We developed the annotation scheme in a cyclic fashion, taking into account annotator feedback after repeated annotation processes.
+Annotators were six student assistants over two years.
+In this experiment, we use a version that distinguishes 13 topic domains, namely \textit{Science}, \textit{Technology}, \textit{Medical}, \textit{Public Life and Infrastructure}, \textit{Politics and Society}, \textit{History}, \textit{Business}, \textit{Law}, \textit{Fine Arts},  \textit{Philosophy}, \textit{Beliefs},  \textit{Life and Leisure}, \textit{Individuals}.
 
 \section{Experiment Setup}
 \label{sec:experiment}
@@ -98,16 +100,15 @@ Due to minimally higher accuracy, SVMs were used in all subsequent experiments.
 Because some topic domains occurred only rarely in the gold standard, and we did not expect the classifier to be able to generalize well from just a few instances.
 Therefore, we evaluated the results on the \textit{full} data set and a \textit{reduced} data set with rare categories removed.
 
-For the underlying topic inference, we used both \textit{Latent Semantic Indexing} (LSI) \cite{LandauerDumais1994,LSAHandbook} and \textit{Latent Dirichlet Allocation} (LDA) \cite{BleiEa2003} as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
+For the underlying topic inference, we used LSI and LDA as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
 The LDA topic distribution in first experiments was highly unstable, and results were generally unusable.
 This was probably due to the comparatively small corpora used.
 We consequently only report LSI results here and will return to LDA in further experiments.
-
 However, for any topic modelling algorithm, our corpora have to be considered small.
 Therefore, we inferred topics not just based on the annotated gold standard data sets, but also on larger datasets which consisted of the gold standard mixed with additional documents from the source corpora.
 We systematically increased the number of mixed-in document in increments of roughly half as many documents as contained in the gold standard corpora.
 
-Linguistic pre-processing was simplified because both corpora have already tokenized, lemmatized, POS-tagged, etc. by their creators.
+We pre-processed both corpora in exactly the same way (tokenization, lemmatization, POS-tagging, named entity recognition).
 Using the lemma and the simplified POS tags (such as \textit{kindergarten\_nn}) as terms in combination with some filters (use only lower-cased purely alphabetic common and proper noun lemmas between 4 and 30 characters long) mostly gave the best results.
 Vocabularies were filtered to contain only terms with a term-document frequency above 2.
 Terms which occurred in more than 50\% of the documents were also removed.
@@ -129,14 +130,14 @@ The highest accuracy is achieved with the reduced set of topic domains (minor ca
 The full set of topic domains leads to a drop in accuracy of about 5\%.
 The two lower bands show the classification accuracy in a 10-fold cross-validation (10CV), again with the reduced set of topic domains performing roughly 5\% better.
 While a higher number of topics improves results on the training data, the accuracy in the cross-validation drops.
-Too large numbers of topics obviously allows the method to pick up idiosyncratic features of single documents or very small clusters, leading to extreme overtraining.
+Too large numbers of topics obviously allow the method to pick up idiosyncratic features of single documents or very small clusters of documents, leading to extreme overtraining.
 
-The four panels show results based of different topic models.
+The four panels show results based on different topic models.
 Panel (a) uses a topic model inferred only from the 870 gold standard documents.
 Results in panel (b) through (d) are based on topic models inferred on larger data sets as described in Section~\ref{sec:experiment}.
 In the experiment reported in panel (d), for example, 1,200 documents were added to the 870 gold standard documents.
-While the overtraining effect is alleviated by mixing in more documents, the maximum achieved accuracy does not significantly improve.
-We continued the experiment (further results not shown here), mixing in up to 8,000 additional documents with no significant change compared to panel (d) in Figure~\ref{fig:cow}.
+While the results in the 10CV are slightly improved by mixing in more documents, the maximum achieved accuracy does not significantly change.
+We continued the experiment (further results not shown here), mixing in up to 8,000 additional documents with no significant change in comparison with panel (d) in Figure~\ref{fig:cow}.
 We consider the maximum 10CV accuracy with the reduced set of topic domains most informative w.\,r.\,t.\ the potential quality of the classifier, and we report it in Table~\ref{tab:quality}.
 
 %With regard to linguistic pre-processing, it should be noticed that it affects the results measurably, but not to extreme degrees.

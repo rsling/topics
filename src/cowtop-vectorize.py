@@ -106,9 +106,6 @@ def main():
         dictionary = corpora.Dictionary(doc for doc in c)
         dictionary.save(fn_dict)
         dictionary.save_as_text(fn_dict_txt)
-        # TODO: parametrize and re-enable; also make option available in merge tool.
-        # dictionary.filter_extremes(2, 0.75)
-
     else:
         dictionary = corpora.dictionary.Dictionary.load(args.dictionary)
 

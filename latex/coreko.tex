@@ -134,14 +134,14 @@ Using the lemma and the simplified POS tags (such as \textit{kindergarten\_nn}) 
   \centering
   \resizebox{\textwidth}{!}{\begin{tabular}{|lrllrrrr|}
     \hline
-    \textbf{Corpus} & \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure} \\
+    \textbf{Corpus} & \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision}$^{\mathrm{\tiny 1}}$ & \textbf{Recall}$^{\mathrm{\tiny 1}}$ & \textbf{F-Measure}$^{\mathrm{\tiny 1}}$ \\
     \hline
     COW & 3,200 & token & 20 & 68.765\% & 0.688 & 0.688 & 0.674 \\
-    DeReKo & 3,600 & lemma + POS & 40 & 72.162\% & 0.716 & 0.722 & 0.686 \\
+    DeReKo & 3,600 & lemma + POS & 40 & 72.999\% & 0.725 & 0.730 & 0.696 \\
     COW + DeReKo & 0 & lemma + POS & 30 & 51.872\% & 0.431 & 0.519 & 0.417 \\ 
     \hline
   \end{tabular}}
-  \caption{Evaluation at best achievable accuracy with the reduced set of topic domains in 10-fold cross-validation; Precision, Recall, and F-Measure are weighted averages across all categories}
+  \caption{Evaluation at best achievable accuracy with the reduced set of topic domains in 10-fold cross-validation ($^{\mathrm{\tiny 1}}$weighted average across all categories)}
   \label{tab:quality}
 \end{table*}
 
@@ -172,22 +172,22 @@ We consider the maximum 10CV accuracy with the reduced set of topic domains most
   \label{fig:coreko}
 \end{figure*}
 
-A parallel plot for the DeReKo data is shown in Figure~\ref{fig:coreko}, and maximally best results are also given in Table~\ref{tab:quality}.
-The picture is essentially the same as for the COW data set.
-The added accuracy (3.397\% according to Table~\ref{tab:quality}) is a side effect of the more skewed distribution of topic domains in the DeReKo gold standard data.
-The $\kappa$ statistic for the COW and DeReKo results from Table~\ref{tab:quality} of $\kappa_{\textrm{\tiny COW}}=0.575$ and $\kappa_{\textrm{\tiny DeReKo}}=0.569$ show that achieving a higher accuracy for the COW data is actually harder than with the DeReKo data.
+A very similar plot for the DeReKo data is shown in Figure~\ref{fig:coreko}.
+The best results are also given in Table~\ref{tab:quality}.
+The added accuracy (4.23\% according to Table~\ref{tab:quality}) is a side effect of the more skewed distribution of topic domains in the DeReKo gold standard data.
+The $\kappa$ statistic for the COW and DeReKo results from Table~\ref{tab:quality} of $\kappa_{\textrm{\tiny COW}}=0.575$ and $\kappa_{\textrm{\tiny DeReKo}}=0.582$ indicate that achieving a higher accuracy for the COW data is actually harder than for the DeReKo data (see also analysis of confusion matrices below).
 
 When the COW and DeReKo data are pooled, however, quality drops below any acceptable level, cf.\ Figure~\ref{fig:coreko} and Table~\ref{tab:quality}.
-Mixing in more documents improves the evaluation results on the training data, but the 10CV results remains steady at around 50\%.
+Mixing in more documents (panels b--d) improves the evaluation results on the training data, but the 10CV results remains steady at around 50\%.
 This is remarkable because larger training data sets should lead to increased, not degraded accuracy.
 While a deeper analysis of the LSI topic distributions remains to be undertaken, it is evident what causes these below average results on the side of the SVM classifier when looking at the confusion matrices, cf.\ Table~\ref{tab:confusion}.
-The dominant modal category is \textit{Life and Leisure} in the COW gold standard (panel a).
-However, the distribution of topic domains is not too skewed, and the confusion is distributed roughly uniformly across categories.
-The DeReKo data set (panel b) consists mainly of two clusters of documents in the domains \textit{Politics and Society} (276 of 837) and \textit{Life and Leisure} (350 of 837).
+In the COW gold standard (panel a), the dominant modal category is \textit{Life and Leisure}.
+The distribution of topic domains is not too skewed, and the confusion is distributed roughly uniformly across categories.
+The DeReKo gold standard (panel b) consists mainly of two clusters of documents in the domains \textit{Politics and Society} and \textit{Life and Leisure}.
 In the joint data set (panel c), this leads to a situation in which the classifier tips over and assigns most documents to \textit{Life and Leisure} and the rest mostly to \textit{Politics and Society}.
 This indicates that for such skewed distributions of topic domains, larger gold standard data sets are required.
 It is not indicative of a general failure of the method or a general incompatibility of newspaper and web data in the context of our method.
-The confusion matrices in Table~\ref{tab:confusion} definitely illustrate, however, that topic domains are represented quite differently in newspaper and web corpora.
+The confusion matrices in Table~\ref{tab:confusion} clearly indicate, however, that topic domains are represented quite differently in newspaper and web corpora.
 
 \begin{table*}[h]
   \centering
@@ -205,20 +205,18 @@ The confusion matrices in Table~\ref{tab:confusion} definitely illustrate, howev
      & \textbf{Beliefs} &  4 &   3 &  11 &   6 &   1 &   0 &  \textbf{30} &   1 \\ 
      & \textbf{Hist}    &  9 &   0 &   9 &   7 &   1 &   1 &   2 &  \textbf{15} \\ 
      \hline
- \end{tabular}}~~\resizebox{0.32\textwidth}{!}{\begin{tabular}{|llcccccccc|}
+ \end{tabular}}~~\resizebox{0.323\textwidth}{!}{\begin{tabular}{|llcccccc|}
     \hline
-     \multicolumn{2}{|c}{\textbf{DeReKo}} & \multicolumn{8}{c|}{\textbf{Classified}} \\
-     && \rot{\textbf{PolSoc~}} & \rot{\textbf{Busi}} & \rot{\textbf{Life}} & \rot{\textbf{Arts}} & \rot{\textbf{Public~}} & \rot{\textbf{Law}} & \rot{\textbf{Beliefs~}} & \rot{\textbf{Hist}} \\
+     \multicolumn{2}{|c}{\textbf{DeReKo}} & \multicolumn{6}{c|}{\textbf{Classified}} \\
+     && \rot{\textbf{PolSoc~}} & \rot{\textbf{Busi}} & \rot{\textbf{Life}} & \rot{\textbf{Indiv}} & \rot{\textbf{Arts}} & \rot{\textbf{Public}} \\
     \hline
-    \multirow{8}{*}{\rot{\textbf{Annotated}}} & \textbf{PolSoc}  & \textbf{222} &   5 &  41 &   0 &   8 &   0 &   0 &   0 \\
-    & \textbf{Busi}    &  19 &  \textbf{25} &   8 &   0 &   1 &   0 &   0 &   0 \\ 
-    & \textbf{Life}    &  27 &   1 & \textbf{321} &   0 &   1 &   0 &   0 &   0 \\ 
-    & \textbf{Arts}    &   2 &   0 &  29 &   \textbf{5} &   0 &   0 &   0 &   0 \\ 
-    & \textbf{Public}  &  41 &   0 &  27 &   0 &  \textbf{31} &   0 &   0 &   0 \\ 
-    & \textbf{Law}     &  10 &   0 &   0 &   0 &   0 &   \textbf{0} &   0 &   0 \\ 
-    & \textbf{Beliefs} &   0 &   0 &   3 &   0 &   0 &   0 &   \textbf{0} &   0 \\ 
-    & \textbf{Hist}    &   2 &   0 &   7 &   0 &   1 &   0 &   0 &   \textbf{0} \\ 
-   \hline
+     \multirow{6}{*}{\rot{\textbf{Annotated}}}& \textbf{PolSoc}  & 223 & 6 & 39 &  0 &  0 &  8 \\
+     & \textbf{Busi}    &  20 & 24 &   9 &  0 &  0 &  0 \\
+     & \textbf{Life}    &  24 &  1 & 324 &  0 &  0 &  1 \\
+     & \textbf{Indiv}   &   5 &  0 &  17 &  0 &  0 &  1 \\
+     & \textbf{Arts}    &   2 &  0 &  28 &  0 &  6 &  0 \\
+     & \textbf{Public}  &  35 &  0 &  30 &  0 &  0 & 34 \\
+    \hline
  \end{tabular}}~~\resizebox{0.315\textwidth}{!}{\begin{tabular}{|llccccccccc|}
     \hline
      \multicolumn{2}{|c}{\textbf{Joint}} & \multicolumn{9}{c|}{\textbf{Classified}} \\
@@ -235,7 +233,7 @@ The confusion matrices in Table~\ref{tab:confusion} definitely illustrate, howev
     & \textbf{Hist}     &   4 &   0 &   0 &  50 &   0 &   0 &   0 &   0 &   \textbf{0} \\ 
     \hline
  \end{tabular}}
-  \caption{Confusion matrices for the best achievable results on the COW (a), DeReKo (b), and joint (c) data sets as reported in Table~\ref{tab:quality}}
+  \caption{Confusion matrices for the best achievable results on the COW (a), DeReKo (b), and joint (c) data sets as reported in Table~\ref{tab:quality}; different sets of categories are the result of excluding low-frequency topic domains (below 20 for COW and DeReKo, below 30 for joint data)}
   \label{tab:confusion}
 \end{table*}
 

@@ -145,7 +145,7 @@ The highest accuracy is achieved with the reduced set of topic domains (minor ca
 The full set of topic domains leads to a drop in accuracy of about 5\%.
 The two lower bands show the classification accuracy in a 10-fold cross-validation (10CV), again with the reduced set of topic domains performing roughly 5\% better.
 While a higher number of topics improves results on the training data, the accuracy in the cross-validation drops.
-Too large numbers of topics obviously allow the method to pick up idiosyncratic features of single documents or very small clusters of documents, leading to extreme overtraining.
+Too large numbers of topics obviously allow the method to pick up idiosyncratic features of single documents or very small clusters of documents, leading to extreme overfitting.
 
 The four panels show results based on different topic models.
 Panel (a) uses a topic model inferred only from the (more than 800) gold standard documents.
@@ -170,8 +170,8 @@ We consider the maximum 10CV accuracy with the reduced set of topic domains most
 A very similar plot for the DeReKo data is shown in Figure~\ref{fig:coreko}.
 The best results are also given in Table~\ref{tab:quality}.
 The added accuracy (4.23\% according to Table~\ref{tab:quality}) is a side effect of the more skewed distribution of topic domains in the DeReKo gold standard data.
-%The $\kappa$ statistic for the COW and DeReKo results from Table~\ref{tab:quality} is $\kappa_{\textrm{\tiny COW}}=0.575$ and $\kappa_{\textrm{\tiny DeReKo}}=0.582$, indicating that achieving a higher accuracy for the COW data is actually slightly harder than for the DeReKo data (see also analysis of confusion matrices below).
-The $\kappa$ statistic for the Web and Newspaper results from Table~\ref{tab:quality} is $\kappa_{\textrm{\tiny Web}}=0.575$ and $\kappa_{\textrm{\tiny News}}=0.582$, indicating that achieving a higher accuracy for the web data is actually slightly harder than for the newspaper data (see also analysis of confusion matrices below).
+%The $\kappa$ statistic for the COW and DeReKo results from Table~\ref{tab:quality} is $\kappa_{\textrm{\tiny COW}}=0.575$ and $\kappa_{\textrm{\tiny DeReKo}}=0.582$, indicating that achieving a higher accuracy for the COW data is actually slightly harder than for the DeReKo data (see also the analysis of the confusion matrices below).
+The $\kappa$ statistic for the Web and Newspaper results from Table~\ref{tab:quality} is $\kappa_{\textrm{\tiny Web}}=0.575$ and $\kappa_{\textrm{\tiny News}}=0.582$, indicating that achieving a higher accuracy for the web data is actually slightly harder than for the newspaper data (see also the analysis of the confusion matrices below).
 
 %When the COW and DeReKo data are pooled, however, quality drops below any acceptable level, cf.\ Figure~\ref{fig:coreko} and Table~\ref{tab:quality}.
 When the Web and News data are pooled, however, quality drops below any acceptable level, cf.\ Figure~\ref{fig:coreko} and Table~\ref{tab:quality}.
@@ -251,7 +251,7 @@ This might be one of the reasons behind the collapse of the classifier when news
 In future experiments, it remains to be discovered whether larger gold standard corpora can alleviate such problems.
 This will eventually enable us to decide whether separate models or pooled models for the two kinds of corpora are more appropriate.
 Thirdly, the highly skewed topic distributions in both newspaper and web corpora indicate that splitting up some topic domains might lead to a better fit.
-In fact, annotators have independently asked whether \textit{Politics and Society} and \textit{Life and Leisure}---the critical categories which make the classifier collapse (cf.\ Section~\ref{sec:results})---could not be split up into at least two categories.
+In fact, annotators have independently asked whether \textit{Politics and Society} and \textit{Life and Leisure}---the critical categories which make the classifier collapse (cf.\ Section~\ref{sec:results})---could not be split up into at least two categories each.
 
 The ultimate goal of our project is to automatically annotate existing web corpora that are several billion tokens large with meta data such as their topic domain and to release the data freely (under a maximally permissive Creative Commons Attribution license).%
 \footnote{The software and the classifiers will be made available under permissive open source licenses allowing even their use in commercial applications.}

@@ -40,8 +40,16 @@
 
 \maketitle
 
-%\begin{abstract}
-%\end{abstract}
+\begin{abstract}
+In this paper, we describe preliminary results from an ongoing experiment wherein we classify two large unstructured text corpora - a web corpus and a
+newspaper corpus - by topic domain (or subject area).
+Our primary goal is to develop a method that allows for the reliable annotation of large crawled web corpora with meta data required by many corpus linguists. We are especially interested in designing an annotation scheme whose categories are both intuitively interpretable by linguists and firmly rooted in the distribution of lexical material.
+Since we use data from a web corpus and a more traditional corpus, we also contribute to the important field of corpus comparison and corpus evaluation.
+Technically, we use (unsupervised) topic modelling (LSI) to automatically induce topic distributions over gold standard corpora that were manually annotated for 13 coarse-grained topic domains.
+In a second step, we apply supervised machine learning (SVMs) to learn the manually annotated topic domains using the previously induced topics as features.
+We achieve around 70\% accuracy in 10-fold cross validations.
+An analysis of the errors clearly indicates, however, that a revised classification scheme and larger gold standard corpora will likely lead to a dramatic increase in accuracy.
+\end{abstract}
 
 \section{Introduction}
 \label{sec:introduction}
@@ -50,27 +58,29 @@ In this paper, we describe preliminary results from an ongoing experiment wherei
 \textit{Topic domain}---along with other high-level classifications based on concepts that are determined a priori such as \textit{genre} or \textit{register}---is among the types of meta data that is most essential to many corpus linguists.
 Therefore, the lack of reliable meta data in general is often mentioned as a major drawback of large, crawled web corpora, and the automatic generation of such meta data is an active field of research.\footnote{See, for example, many of the contributions in \newcite{MehlerEa2010}.}
 It must be noted, however, that such high-level annotations are not reliably available for many very large traditional corpora (such as newspaper corpora), either.
-When it comes to the automatic identification of high-level categories like register, even very recent approaches based on very large amounts of training data cannot deliver satisfying (arguably not even encouraging) results \cite{BiberEgbert2016}.
-\newcite[23]{BiberEgbert2016} report \textit{accuracy}=$0.421$, \textit{precision}=$0.268$, \textit{recall}=$0.3$.
+When it comes to the automatic identification of high-level categories like register (such as \textit{Opinion}, \textit{Narrative}, \textit{Informational Persuation}; Biber and Egbert 2016), even very recent approaches based on very large amounts of training data cannot deliver satisfying (arguably not even encouraging) results.
+% \cite{BiberEgbert2016}.
+For instance, \newcite[23]{BiberEgbert2016} report \textit{accuracy}=$0.421$, \textit{precision}=$0.268$, \textit{recall}=$0.3$.
 %It is unclear whether categories such as register and genre can be operationalized such that a reliable annotation is even possible for humans.
 By contrast, automatic text categorization by \textit{content} yielded much more promising results years ago already \cite{Sebastiani2002}.
 Furthermore, data-driven induction of topics has proven quite successful and is in many respects a more objective way of organizing a collection of documents by content, as advocated in the \newcite{EAGLES1996} guidelines, among others.
 Still, the category labels that can be inferred from such topics are not necessarily useful for linguistic corpus users.
-In our project, we explore the possibility of inferring a small, more traditional set of \textit{topic domains} (or \textit{subject areas}) specified a priori from the topics induced in an unsupervised manner by Latent Semantic Indexing \cite{LandauerDumais1994,LandauerDumais1997} and Latent Dirichlet Allocation \cite{BleiEa2003}.
+In our project, we explore the possibility of inferring a small, more traditional set of \textit{topic domains} (or \textit{subject areas}) specified a priori from the topics induced in an unsupervised manner by Latent Semantic Indexing \cite{LandauerDumais1994,LandauerDumais1997}.
+% and Latent Dirichlet Allocation \cite{BleiEa2003}.
 Since we classify and compare one large German web corpus and one large German newspaper corpus with respect to their distribution of topic domains, our paper also contributes to the area of corpus comparison, another important issue in corpus linguistics \cite{Kilgarriff2001,BiemannEa2013}.
 For the construction of crawled web corpora, such automatized comparisons are vital because next to nothing is known about their composition.
 
 The computational tools used in our method (unsupervised topic induction and supervised classifiers for high-dimensional feature spaces) are by now well-established and highly developed.
-This paper contributes to the field of applying such methods and making them usable for real-life problems of data processing rather than to the development of the underlying mathematics and algorithms.
+This paper contributes to the field of applying such methods and making them usable for real-life problems of data processing and the development of suitable annotation schemes rather than to the development of the underlying mathematics and algorithms.
 
 \section{Gold Standard Data}
 \label{sec:goldstandard}
 
 Our gold standard corpora were prepared by manual annotation of documents from two large German corpora.
-%The first data set consists of 870 randomly selected documents from DECOW14A, a crawled web corpus \cite{SchaeferBildhauer2012a,Schaefer2015b}.
-The first data set consists of 870 randomly selected documents from a crawled web corpus (henceforth \textit{Web}).
-%The second data set contains 886 documents randomly selected from \textit{DeReKo}, a corpus composed predominantly of newspaper texts \cite{KupietzEa2010}. 
-The second data set contains 886 documents randomly selected from a corpus composed predominantly of newspaper texts (henceforth \textit{News}).
+The first data set consists of 870 randomly selected documents from DECOW14A, a crawled web corpus \cite{SchaeferBildhauer2012a,Schaefer2015b}, henceforth \textit{Web}.
+%The first data set consists of 870 randomly selected documents from a crawled web corpus (henceforth \textit{Web}).
+The second data set contains 886 documents randomly selected from DeReKo, a corpus composed predominantly of newspaper texts \cite{KupietzEa2010}, henceforth \textit{News}. 
+%The second data set contains 886 documents randomly selected from a corpus composed predominantly of newspaper texts (henceforth \textit{News}).
 Our choice of corpora was motivated by fact that we expected some overlap w.\,r.\,t.\ to topics covered in them, but also some major differences. 
 The documents in these gold standard corpora were classified according to a custom annotation scheme for topic domain which builds on previous work by \newcite{Sharoff2006}.
 The design goal was to a have moderate number (about 10--20) of topic domains that can be thought of as subsuming more fine-grained topic distinctions.
@@ -89,7 +99,7 @@ For the experiment reported here, we used a version that distinguishes 13 topic 
 \label{sec:experiment}
 
 Our general approach was to infer a topic distribution over a corpus using \textit{unsupervised} topic modelling algorithms as a first step.
-In the second step, we used the resulting document--topic matrix to learn topic domain distinctions for the documents from their assignment to the topics in a \textit{supervised} manner.
+In the second step, rather than examining and interpreting the inferred topical structure, we used the resulting document--topic matrix to learn topic domain distinctions for the documents from their assignment to the topics in a \textit{supervised} manner.
 To achieve this, supervised classifiers were used.
 Through permutation of virtually all available classifiers (with the appropriate capabilities) available in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate.
 %, which is an expected result given the high dimensionality of the feature space (20 to 90 topics, see Section~\ref{sec:results}).
@@ -97,7 +107,7 @@ Due to minimally higher accuracy, SVMs were used in all subsequent experiments.
 Some topic domains occurred only rarely in the gold standard, and we did not expect the classifier to be able to generalize well from just a few instances.
 Therefore, we evaluated the results on the \textit{full} data set and a \textit{reduced} data set with rare categories removed.
 
-For the first step (unsupervised topic induction), we used LSI and LDA as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
+For the first step (unsupervised topic induction), we used LSI and LDA (Latent Dirichlet Allocation, Blei et al.\ 2003\nocite{BleiEa2003}) as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
 In our first experiments, the LDA topic distribution was unstable, and results were generally unusable, which was probably due to the comparatively small gold standard corpora used.
 We consequently only report LSI results here and will return to LDA in further experiments (cf. Section~\ref{sec:conclusions}).
 However, for any topic modelling algorithm, our corpora can be considered small.
@@ -254,6 +264,7 @@ In future experiments, it remains to be discovered whether larger gold standard 
 This will eventually enable us to decide whether separate models or pooled models for the two kinds of corpora are more appropriate.
 Thirdly, the highly skewed topic distributions in both newspaper and web corpora indicate that splitting up some topic domains might lead to a better fit.
 In fact, annotators have independently asked whether \textit{Politics and Society} and \textit{Life and Leisure}---the critical categories which make the classifier collapse (cf.\ Section~\ref{sec:results})---could not be split up into at least two categories each.
+Finally, we are also experimenting with an extended annotation scheme that allows for multiple weighted assignements of documents to topic domains.
 
 The ultimate goal of our project is to automatically annotate existing web corpora that are several billion tokens large with meta data such as their topic domain and to release the data freely (under a maximally permissive Creative Commons Attribution license).%
 \footnote{The software and the classifiers will be made available under permissive open source licenses allowing even their use in commercial applications.}

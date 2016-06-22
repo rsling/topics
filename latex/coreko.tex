@@ -10,7 +10,7 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 
-%\aclfinalcopy % Uncomment this line for the final submission
+\aclfinalcopy % Uncomment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
 
 % To expand the titlebox for more authors, uncomment
@@ -91,7 +91,8 @@ For the experiment reported here, we used a version that distinguishes 13 topic 
 Our general approach was to infer a topic distribution over a corpus using \textit{unsupervised} topic modelling algorithms as a first step.
 In the second step, we used the resulting document--topic matrix to learn topic domain distinctions for the documents from their assignment to the topics in a \textit{supervised} manner.
 To achieve this, supervised classifiers were used.
-Through permutation of virtually all available classifiers (with the appropriate capabilities) available in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate, which is an expected result given the high dimensionality of the feature space (20 to 90 topics, see Section~\ref{sec:results}).
+Through permutation of virtually all available classifiers (with the appropriate capabilities) available in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate.
+%, which is an expected result given the high dimensionality of the feature space (20 to 90 topics, see Section~\ref{sec:results}).
 Due to minimally higher accuracy, SVMs were used in all subsequent experiments.
 Some topic domains occurred only rarely in the gold standard, and we did not expect the classifier to be able to generalize well from just a few instances.
 Therefore, we evaluated the results on the \textit{full} data set and a \textit{reduced} data set with rare categories removed.

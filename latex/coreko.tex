@@ -37,7 +37,7 @@ In this paper, we describe preliminary results from an ongoing experiment wherei
 newspaper corpus---by topic domain (or subject area).
 Our primary goal is to develop a method that allows for the reliable annotation of large crawled web corpora with meta data required by many corpus linguists. We are especially interested in designing an annotation scheme whose categories are both intuitively interpretable by linguists and firmly rooted in the distribution of lexical material in the documents.
 Since we use data from a web corpus and a more traditional corpus, we also contribute to the important field of corpus comparison and corpus evaluation.
-Technically, we use (unsupervised) topic modelling to automatically induce topic distributions over gold standard corpora that were manually annotated for 13 coarse-grained topic domains.
+Technically, we use (unsupervised) topic modeling to automatically induce topic distributions over gold standard corpora that were manually annotated for 13 coarse-grained topic domains.
 In a second step, we apply supervised machine learning to learn the manually annotated topic domains using the previously induced topics as features.
 We achieve around 70\% accuracy in 10-fold cross validations.
 An analysis of the errors clearly indicates, however, that a revised classification scheme and larger gold standard corpora will likely lead to a substantial increase in accuracy.
@@ -87,7 +87,7 @@ For the experiment reported here, we used a version that distinguishes 13 topic 
 \section{Experiment Setup}
 \label{sec:experiment}
 
-Our general approach was to infer a topic distribution over a corpus using \textit{unsupervised} topic modelling algorithms as a first step.
+Our general approach was to infer a topic distribution over a corpus using \textit{unsupervised} topic modeling algorithms as a first step.
 In the second step, rather than examining and interpreting the inferred topical structure, we used the resulting document--topic matrix to learn topic domain distinctions for the documents from their assignment to the topics in a \textit{supervised} manner.
 To achieve this, supervised classifiers were used.
 Through permutation of virtually all available classifiers (with the appropriate capabilities) available in the Weka toolkit \cite{HallWitten2011}, LM Trees \cite{LandwehrEa2005} and SVMs with a Pearson VII kernel \cite{UstunEa2006} were found to be most accurate.
@@ -96,9 +96,9 @@ Some topic domains occurred only rarely in the gold standard, and we did not exp
 Therefore, we evaluated the results on the \textit{full} data set and a \textit{reduced} data set with rare categories removed.
 
 For the first step (unsupervised topic induction), we used LSI and LDA (Latent Dirichlet Allocation, Blei et al.\ 2003\nocite{BleiEa2003}) as implemented in the Gensim toolkit \cite{RehurekSojka2010}.
-In our first experiments, the LDA topic distribution was unstable, and results were generally unusable, which was probably due to the comparatively small gold standard corpora used.
+In our first experiments, the LDA topic distribution was unstable, and results were generally unusable, possibly due to the comparatively small gold standard corpora used.
 We consequently only report LSI results here and will return to LDA in further experiments (cf. Section~\ref{sec:conclusions}).
-However, for any topic modelling algorithm, our corpora can be considered small.
+However, for any topic modeling algorithm, our corpora can be considered small.
 Therefore, we inferred topics not just based on the annotated gold standard data sets, but also on larger datasets which consisted of the gold standard mixed with additional documents from the source corpora.
 For the training of the SVM classifiers, the documents that had been mixed in were removed again because no gold standard annotation was available for them.
 We systematically increased the number of mixed-in document in increments of roughly half as many documents as contained in the gold standard corpora.
@@ -223,6 +223,7 @@ The confusion matrices in Table~\ref{tab:confusion} clearly indicate, however, t
 \section{Conclusions and Outlook}
 \label{sec:conclusions}
 
+\enlargethispage{\baselineskip}
 The results presented here are highly encouraging, and they clearly indicate the route to be taken in further experiments.
 First of all, there appears to be a connection between induced topic distributions and more general topic domains.
 The decreased performance in cross-validation experiments indicates that larger gold standard data sets are required.
@@ -238,7 +239,7 @@ In fact, annotators have independently asked whether \textit{Politics and Societ
 
 Additionally, we will investigate whether alternative topic modeling algorithms lead to a better fit.%
 \footnote{The Gensim toolkit offers a wide array of algorithms, including \textit{doc2vec} and an alternative LDA implementation \textit{ldamallet}.}
-Moreover, as suggested by an anonymous reviewer, our results could be compared with a baseline classification that does not make use of LSI topics.
+Moreover, as suggested by an anonymous reviewer, our results could be compared with a baseline classification that does not make use of topic modeling algorithms.
 Finally, we are currently experimenting with an extended annotation scheme that allows for multiple weighted assignments of documents to topic domains.
 
 The ultimate goal of our project is to automatically annotate existing web corpora that are several billion tokens large with meta data such as their topic domain and to release the data freely (under a maximally permissive Creative Commons Attribution license).%

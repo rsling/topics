@@ -37,8 +37,8 @@
 \begin{frame}
 %\begin{textblock*}%{2cm}(.35cm,-8cm)                                                                                          
 %  \includegraphics[scale=.48]{hukombi_bwb}
-\includegraphics[width=0.25\textwidth]{fulogo}\hspace{0.05\textwidth}\includegraphics[width=0.10\textwidth]{dfglogo}\hspace{0.4
-\textwidth}\includegraphics[width=0.2\textwidth]{idslogo}
+\includegraphics[width=0.25\textwidth]{graphics/fulogo}\hspace{0.05\textwidth}\includegraphics[width=0.10\textwidth]{graphics/dfglogo}\hspace{0.4
+\textwidth}\includegraphics[width=0.2\textwidth]{graphics/idslogo}
 %  \end{textblock*}
   \maketitle
 \end{frame}
@@ -52,7 +52,7 @@
     \item Also important for \alert{corpus evaluation} and corpus comparison\\
 %      \citep{Kilgarriff2001,BiemannEa2013,SchaeferBildhauer2013de}
       \vspace{0.5cm}
-    \item Automatic classification by \alert{genre/register}: disappointing results, even in recent experiments.
+    \item Automatic classification by \alert{genre/register}: in unrestricted domains, disappointing results, even in recent experiments.
     \item \citet{BiberEgbert2016}: acc.=0.42, prec.=0.27, rec.=0.3
   \end{itemize}
 \end{frame}
@@ -118,11 +118,11 @@
 \begin{frame}
   {Step 1: Creating a gold standard data set}
   \begin{itemize}
-    \item 870 documents from DECOW14\\
-    (crawled web corpus, \citealp{SchaeferBildhauer2012a,Schaefer2015b})
-    \item 886 documents from DeReKo\\
-    (predominantly newpspaper texts; \citealp{KupietzEa2010})
-    \item Manually annotated with COWCat categories for topic domains
+    \item 870 documents from \alert{DECOW14}, crawled \alert{web} corpus\\
+    \citep{SchaeferBildhauer2012a,Schaefer2015b}
+    \item 886 documents from \alert{DeReKo}, mostly \alert{newspaper} texts\\
+    \citep{KupietzEa2010}
+    \item Manually annotated with COWCat for topic domain (COWCat)
       \vspace{0.5cm}
     \item {\footnotesize Annotators: Sarah Dietzfelbinger, Lea Helmers, Theresia Lehner, Kim Maser, Samuel Reichert, Luise Rißmann (FU Berlin); Monica Fürbacher (IDS Mannheim)}
   \end{itemize}
@@ -133,19 +133,19 @@
   {Distribution of topic domains}
   Comparison of DeReKo and DECOW14\\[1cm]
   \begin{center}
-    \includegraphics[width=0.45\textwidth]{dereko}~\includegraphics[width=0.45\textwidth]{cow}
+    \includegraphics[width=0.45\textwidth]{graphics/dereko-cowcat}~\includegraphics[width=0.45\textwidth]{graphics/cow-cowcat}
   \end{center}
 \end{frame}
 
 \begin{frame}
-  {Step 2: Topic modelling}
+  {Step 2: Topic modeling}
 
   \begin{itemize}
     \item Starting point: term-document matrix
     \item Documents: weighted assignment to topics
     \item Topics: defined by a set of weighted words
   \end{itemize}
-
+\pause
   Our experiment:
   \begin{itemize}
     \item LSI (\citealp{LandauerDumais1994})\\
@@ -154,6 +154,7 @@
     \item LDA topic distributions unstable (small gold standard corpora)
     \item Incrementally add other documents from the source copora
      \vspace{.25cm}
+\pause
     \item Input terms: lemma $+$ simplified POS tag (\textit{kindergarten\_nn}) 
     \item Filtering: best results with lower-cased, purely alphabetic noun lemmas, 4--30 chars long
     \end{itemize}
@@ -163,7 +164,7 @@
 \begin{frame}
   {Corpus comparison: distribution of (selected) LSI-topics}
   \begin{center}
-    \includegraphics[width=0.75\textwidth]{topics-logratios2bw}
+    \includegraphics[width=0.75\textwidth]{graphics/topics-logratios2bw}
   \end{center}
 \end{frame}
 
@@ -185,73 +186,119 @@ Set of experiments with:
     \item topics induced from
       \begin{itemize} 
         \item gold standard data plus varying amounts of additional documents
-        \item several pre-processing variants of gold standard data
+        \item several pre-processing variants
       \end{itemize}
     \item evaluation on the \textit{full} data set and on a \textit{reduced} data set (with rare categories removed)
   \end{itemize}
 \end{frame}
 
-%\begin{frame}
-%  {Ergebnisse}
-%  COW ($\kappa$)\\
-%
-%  \begin{center}
-%    \includegraphics[width=\textwidth]{cow_kappa}
-%  \end{center}
-%\end{frame}
-%
-%\begin{frame}
-%  {Ergebnisse}
-%  DeReKo ($\kappa$)\\
-%
-%  \begin{center}
-%    \includegraphics[width=\textwidth]{dereko_kappa}
-%  \end{center}
-%\end{frame}
-%
-%\begin{frame}
-%  {Ergebnisse}
-%  Zusammen ($\kappa$)\\
-%
-%  \begin{center}
-%    \includegraphics[width=\textwidth]{coreko_kappa}
-%  \end{center}
-%\end{frame}
 
 \begin{frame}
-  {Ergebnisse und Probleme}
-  Evaluation\\
+  {Results: Web (accuracy)}
+%Best result: $acc=68.765\%$,  $prec=0.688$, $rec=0.688$, $F=0.674$\\
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth, height=6.4cm]{graphics/acc_cow.pdf}
+  \end{figure}
+  \vspace{-.3cm}
+  \centering
+  \scalebox{.7}{
+  \begin{tabular}{|rlrrrrr|}
+      \hline
+      \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure}\\
+      \hline
+      3,200 & token & 20 & 68.765\% & 0.688 & 0.688 & 0.674 \\
+      \hline
+  \end{tabular}
+  }
+\end{frame}
 
+
+\begin{frame}
+  {Results: News (accuracy)}
+  %$acc=72.999\%$, $prec=0.725$, $rec=0.730$, $F=0.696$ \\
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth, height=6.4cm]{graphics/acc_dereko.pdf}
+  \end{figure}
+  \vspace{-.3cm}
+  \centering
+  \scalebox{.7}{
+    \begin{tabular}{|rlrrrrr|}
+      \hline
+      \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure}\\
+      \hline
+      3,600 & lemma + POS & 40 & 72.999\% & 0.725 & 0.730 & 0.696 \\     
+      \hline
+    \end{tabular}
+  }
+\end{frame}
+
+\begin{frame}
+  {Results: Web + News (accuracy)}
+  %$acc=72.999\%$, $prec=0.725$, $rec=0.730$, $F=0.696$ \\
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth, height=6.4cm]{graphics/acc_coreko.pdf}
+  \end{figure}
+  \vspace{-.3cm}
+  \centering
+  \scalebox{.7}{
+    \begin{tabular}{|rlrrrrr|}
+      \hline
+      \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure}\\
+      \hline
+      0 & lemma + POS & 30 & 51.872\% & 0.431 & 0.519 & 0.417 \\      
+      \hline
+    \end{tabular}
+  }
+\end{frame}
+
+
+
+\begin{frame}
+  {Results: all}
+  \centering
+  \scalebox{.65}{
+    \begin{tabular}{|lrllrrrr|}
+      \hline
+      \textbf{Corpus} & \textbf{Mixed-in} & \textbf{Attribute} & \textbf{Topics} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure}\\
+      \hline
+      Web & 3,200 & token & 20 & 68.765\% & 0.688 & 0.688 & 0.674 \\
+      News & 3,600 & lemma + POS & 40 & 72.999\% & 0.725 & 0.730 & 0.696 \\
+      Web + News & 0 & lemma + POS & 30 & 51.872\% & 0.431 & 0.519 & 0.417 \\ 
+      \hline
+    \end{tabular}
+  }
+
+\vspace{.5cm}
+
+  \begin{itemize}
+    \item \alert{Web + News}: larger training set does not increase accuracy
+    \item \alert{Web + News}: mixing in more documents for topic modeling does not increase accuracy
+    \item \alert{News}: higher accuracy (4.23\%) probably a side effect of the more skewed distribution of topic domains in gold standard data
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  {Confusion matrices}
   \vspace{0.5cm}
-  \resizebox{\textwidth}{!}{\begin{tabular}{lrrrr}
+  \resizebox{0.33\textwidth}{!}{\begin{tabular}{|llcccccccc|}
     \hline
-    \textbf{Corpus} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-Measure} \\
-    \hline
-    COW &  \alert<2->{68.765\%} & 0.688 & 0.688 & 0.674 \\
-    DeReKo & \alert<3->{72.999\%} & 0.725 & 0.730 & 0.696 \\
-    COW + DeReKo & \onslide<4->{\alert{?}} & \onslide<4->{?} & \onslide<4->{?} & \onslide<4->{?} \\ 
-    \hline
-  \end{tabular}}
-  \onslide<7->{~}
-%  \vspace{0.5cm}
-%  Diffusionsmatritzen\\
-%
-%  \vspace{0.5cm}
-%  \resizebox{0.33\textwidth}{!}{\begin{tabular}{|llcccccccc|}
-%    \hline
-%    \multicolumn{2}{|c}{\textbf{COW}} & \multicolumn{8}{c|}{\textbf{Classified}} \\
-%     && \rot{\textbf{PolSoc~}} & \rot{\textbf{Busi}} & \rot{\textbf{Life}} & \rot{\textbf{Arts}} & \rot{\textbf{Public~}} & \rot{\textbf{Law}} & \rot{\textbf{Beliefs~}} & \rot{\textbf{Hist}} \\
-%   \hline
-%   \multirow{8}{*}{\rot{\textbf{Annotated}}} & \textbf{PolSoc}  & \textbf{26} &  12 &  10 &   1 &   1 &   0 &   1 &   0 \\ 
-%     & \textbf{Busi}    &  5 & \textbf{105} &  40 &   7 &   1 &   2 &   1 &   1 \\ 
-%     & \textbf{Life}    &  3 &  14 & \textbf{286} &   6 &   4 &   1 &   1 &   1 \\ 
-%     & \textbf{Arts}    &  3 &   2 &  36 &  \textbf{78} &   1 &   0 &   2 &   6 \\ 
-%     & \textbf{Public}  &  0 &   3 &  11 &   0 &   \textbf{9} &   1 &   0 &   0 \\ 
-%     & \textbf{Law}     &  3 &   9 &   8 &   0 &   1 &   \textbf{8} &   0 &   0 \\ 
-%     & \textbf{Beliefs} &  4 &   3 &  11 &   6 &   1 &   0 &  \textbf{30} &   1 \\ 
-%     & \textbf{Hist}    &  9 &   0 &   9 &   7 &   1 &   1 &   2 &  \textbf{15} \\ 
-%     \hline
-% \end{tabular}}~~\resizebox{0.25\textwidth}{!}{\begin{tabular}{|llcccccc|}
+    \multicolumn{2}{|c}{\textbf{COW}} & \multicolumn{8}{c|}{\textbf{Classified}} \\
+     && \rot{\textbf{PolSoc~}} & \rot{\textbf{Busi}} & \rot{\textbf{Life}} & \rot{\textbf{Arts}} & \rot{\textbf{Public~}} & \rot{\textbf{Law}} & \rot{\textbf{Beliefs~}} & \rot{\textbf{Hist}} \\
+   \hline
+   \multirow{8}{*}{\rot{\textbf{Annotated}}} & \textbf{PolSoc}  & \textbf{26} &  12 &  10 &   1 &   1 &   0 &   1 &   0 \\ 
+     & \textbf{Busi}    &  5 & \textbf{105} &  40 &   7 &   1 &   2 &   1 &   1 \\ 
+     & \textbf{Life}    &  3 &  14 & \textbf{286} &   6 &   4 &   1 &   1 &   1 \\ 
+     & \textbf{Arts}    &  3 &   2 &  36 &  \textbf{78} &   1 &   0 &   2 &   6 \\ 
+     & \textbf{Public}  &  0 &   3 &  11 &   0 &   \textbf{9} &   1 &   0 &   0 \\ 
+     & \textbf{Law}     &  3 &   9 &   8 &   0 &   1 &   \textbf{8} &   0 &   0 \\ 
+     & \textbf{Beliefs} &  4 &   3 &  11 &   6 &   1 &   0 &  \textbf{30} &   1 \\ 
+     & \textbf{Hist}    &  9 &   0 &   9 &   7 &   1 &   1 &   2 &  \textbf{15} \\ 
+     \hline
+ \end{tabular}}
+%~~\resizebox{0.25\textwidth}{!}{\begin{tabular}{|llcccccc|}
 %    \hline
 %     \multicolumn{2}{|c}{\textbf{DeReKo}} & \multicolumn{6}{c|}{\textbf{Classified}} \\
 %     && \rot{\textbf{PolSoc~}} & \rot{\textbf{Busi}} & \rot{\textbf{Life}} & \rot{\textbf{Indiv}} & \rot{\textbf{Arts}} & \rot{\textbf{Public}} \\

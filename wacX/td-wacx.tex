@@ -21,8 +21,8 @@
 
 \title[Topic Domains]{Automatic Classification by Topic Domain for Meta Data Generation, Web Corpus Evaluation, and Corpus Comparison}
 \author[Roland Schäfer, Felix Bildhauer]{Roland Schäfer$^1$ and Felix Bildhauer$^2$}
-\institute[]{$^1$Ling.\ Web Characterization (DFG), FU Berlin\\ $^2$Institut für Deutsche Sprache, Mannheim}
-\date[]{10th Web as Corpus Workshop, ACL 2016, Berlin\\August 12, 2016}
+\institute[]{$^1$German Grammar, Freie Universität Berlin (DFG, grant SCHA1916\slash 1-1)\\ $^2$Institut für Deutsche Sprache, Mannheim}
+\date[]{10th Web as Corpus Workshop (WAC-X), ACL 2016, Berlin\\August 12, 2016}
 
 \usetheme{default}
 \usecolortheme{beaver}
@@ -47,7 +47,8 @@
   {Background}
   \begin{itemize}
     \item \alert{Reliable metadata}: not available for large crawled web corpora
-    \item \alert{Topic domain} (and genre/register): essential for many corpus linguists
+    \item \alert{Topic domain} (and genre/register) meta data:\\
+      essential to many corpus linguists
     \item Also important for \alert{corpus evaluation} and corpus comparison\\
 %      \citep{Kilgarriff2001,BiemannEa2013,SchaeferBildhauer2013de}
       \vspace{0.5cm}
@@ -62,7 +63,8 @@
   {Automatic classification by content}  
   \begin{itemize}
     \item Promising results years ago already \citep{Sebastiani2002}
-    \item \alert{Data-driven induction of topics}: a very objective way of organizing a collection of documents by content
+    \item \alert{Data-driven induction of topics}: a very objective way\\
+      of organizing a collection of documents by content
     \item Topic classification through internal criteria:\\ also advocated in the \citet{EAGLES1996} guidelines
    \end{itemize}
   
@@ -71,7 +73,8 @@
   But:
   \begin{itemize}
     \item \alert{Topic modeling}: no category labels
-    \item From a linguist's viewpoint: categories should be `intuitively' interpretable
+    \item From a linguist's viewpoint: categories should be\\
+      `intuitively' interpretable
   \end{itemize}
   \end{frame}
 
@@ -80,17 +83,20 @@
     {Experiment}
     Idea
     \begin{enumerate}
-      \item Infer a topic distribution over a corpus using topic modeling algorithms (\alert{unsupervised})
+      \item Infer a topic distribution over a corpus using\\
+	topic modeling algorithms (\alert{unsupervised})
       \item Do not interpret the inferred topical structure directly
-      \item Instead, learn a small set of topic domains from the documents' assignment to the topics (\alert{supervised})
+      \item Instead, learn a small set of topic domains from\\
+	the documents' assignment to the topics (\alert{supervised})
     \end{enumerate}
 \pause
     Goals
     \begin{itemize}
-      \item Development of a suitable annotation scheme for topic domain,\\
-      grounded in lexical distributions
+      \item Development of a suitable annotation scheme\\
+	for topic domain, grounded in lexical distributions
       \item Corpus comparison: web corpus vs.\ newspaper corpus\\
-       (very little is known about the composition of crawled web corpora)
+       (very little is known about the composition\\
+       of crawled web corpora)
     \end{itemize}
     \end{frame}
 
@@ -111,7 +117,7 @@
     \begin{itemize}
     \item Design goal: moderate number (about 10--20) of topic domains\\
     (broad subject areas)
-    \item Basis for our classifcation experiments: 13 categories
+    \item Basis for our classifcation experiment reported here: 13 categories
     \item Developed in a cyclic fashion\\
     (repeated annotation processes, annotator feedback)
   \end{itemize}
@@ -126,7 +132,9 @@
     \citep{KupietzEa2010}
     \item Manually annotated with CoReCo categories\\
       \vspace{0.5cm}
-    {\footnotesize Annotators: Sarah Dietzfelbinger, Lea Helmers, Theresia Lehner, Kim Maser, Samuel Reichert, Luise Rißmann (FU Berlin); Monica Fürbacher (IDS Mannheim)}
+    {\footnotesize Annotators: Sarah Dietzfelbinger, Lea Helmers, Theresia Lehner,\\
+    Kim Maser, Samuel Reichert, Luise Rißmann (FU Berlin);\\
+  Monica Fürbacher (IDS Mannheim)}
   \end{itemize}
 \end{frame}
 
@@ -179,7 +187,7 @@
   {Step 3: Learning CoReCo topic domains from LSI-topics}
   \begin{itemize}
     \item Permutation of virtually all supervised classifiers in \texttt{Weka}\\ \citep{HallWitten2011}
-    \item Highest accuracy: SVMs with a Pearson VII kernel\\ \citep{UstunEa2006}
+    \item Highest accuracy: SVMs with a Pearson VII universal kernel\\ \citep{UstunEa2006}
   \end{itemize}
   \vspace{.5cm}
 \pause
@@ -188,7 +196,8 @@ Set of experiments with:
     \item varying number of LSI-topics
     \item topics induced from
       \begin{itemize} 
-        \item gold standard data plus varying amounts of additional documents
+        \item gold standard data plus varying amounts\\
+	  of additional documents
         \item several pre-processing variants
       \end{itemize}
     \item evaluation on the \textit{full} data set and on a \textit{reduced} data set (with rare categories removed)
@@ -291,7 +300,8 @@ Set of experiments with:
 \begin{frame}
   {Conclusions}
   \begin{itemize}
-    \item Connection between induced topic distributions and more general topic domains
+    \item Connection between induced topic distributions\\
+      and more general topic domains
 \pause
     \vspace{.25cm}
     \item Decreased performance on joint Web and News corpora:
@@ -304,7 +314,8 @@ Set of experiments with:
     \item Adapt annotation scheme
     \begin{itemize}
       \item split up some topic domains (based on annotator feedback)
-      \item current experiments: multiple weighted assignments of documents to topic domains
+      \item current experiments: multiple weighted assignments\\
+	of documents to topic domains
     \end{itemize}
 \pause
     \vspace{.25cm}

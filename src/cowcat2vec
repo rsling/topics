@@ -1,60 +1,90 @@
 #!/usr/bin/python
+# -*- coding:utf-8 -*-
 
-# This reads in a spreadsheet (tab separated) with COWCat annotations,
-# (one document per line) and constructs a vector of annotations for 
-# each document.
+import sys
+import os
+from argparse import ArgumentParser
 
-CATEGORIES=["te","me","hi","ph","be","lw","po","so","ir","bi","pu","ic","na","sp","ar","en","le","iv","fi","sc"]
-#ANNOTATION_FIRST_COLUMN=4
-#ANNOTATION_LAST_COLUMN=7
-#ID_COLUMN=3
+def arguments():
+    parser = ArgumentParser(description="Reads in a spreadsheet (tab separated) with COWCat annotations, (one document per line) and constructs a vector of annotations for each document.")
+    parser.add_argument('infile', help='tab separated COWCat annotations, one document per line, one field is the doc-ID')
+    parser.add_argument('--id', type=int,  default=1, help='field containing the doc-ID (default: 1)')
+    parser.add_argument('--annos', default="2-5", help='(adjacent) fields containing the annotations, e.g. 3-6 (default: 2-5)')
+    parser.add_argument('--names', action='store_true', default=False, help='print field names')
+    args = parser.parse_args()
+    return(args)
 
-## Don't adapt past this line ##
+
+def cowCatCats():
+    return(["te","me","hi","ph","be","lw","po","so","ir","bi","pu","ic","na","sp","ar","en","le","iv","fi","sc"])
+
+
 
 class annodict(dict):
-	def __init__(self,cats):
-		for cat in cats:
-			self[cat] = 0
-
-
-
+    """A dictionary that initializes the keys given in cats with a value of 0"""
+    def __init__(self,cats):
+        for cat in cats:
+            self[cat] = 0
 
 
 def main():
-	import sys
-	infile = open(sys.argv[1])
-	ids = sys.argv[2].strip()
-	columns = sys.argv[3].strip().split("-")
+    args = arguments()
+    CATEGORIES = cowCatCats()    
+
+    if not os.path.exists(args.infile):
+        sys.stderr.write("File '" + args.infile + "'does not exist.\n" )
+        sys.exit(1)
+    else:
+        infile = open(args.infile)
+	    
+    ID_COLUMN = args.id
+        
+    try:
+        columns = args.annos.strip().split("-")
 	ANNOTATION_FIRST_COLUMN = int(columns[0])
 	ANNOTATION_LAST_COLUMN = int(columns[1])
-        ID_COLUMN = int(ids)
+    except ValueError:
+        sys.stderr.write("Annos should be specified like this: 2-5\n" )
+        sys.exit(1)
+    except IndexError:
+        sys.stderr.write("Annos should be specified like this: 2-5\n" )
+        sys.exit(1)
+
+    if args.names == True:
+        mydict = annodict(CATEGORIES)
+        names = ["ID"] + [key for key in sorted(mydict)]
+        header = "\t".join(names) + "\n"
+        sys.stdout.write(header)
+        
       	
-	for line in infile:
-		if not line.startswith('#'):
-			b = []
-                        error = False
-			mydict = annodict(CATEGORIES)
-			spline = line.strip().split("\t")
-			textid = spline[ID_COLUMN-1]
-			b.append(textid)
-			for column in range(ANNOTATION_FIRST_COLUMN-1, ANNOTATION_LAST_COLUMN):
-				try:
-					mydict[spline[column].lower()] += 1
-				except KeyError:
-					sys.stderr.write(textid + "\t: Undefined category '" + spline[column] + "' in column " + str(column) + "\n")
-#					sys.exit(1)
-                                        error = True
-				except IndexError:
-					sys.stderr.write(textid + "\t: No annotation in column " + str(column) + "\n")
-                                        error = True
-			if error == True:
-                                b = b + ['_']*len(mydict)
-                        	out_line = "\t".join(b)
-                        else:
-    				for i in sorted(mydict):
-					b.append(str(mydict[i]))
-			out_line = "\t".join(b)
-			sys.stdout.write(out_line + "\n")
+    for line in infile:
+        if not line.startswith('#'):
+            line = line.decode('utf-8')
+            b = []
+            error = False
+            mydict = annodict(CATEGORIES)
+            spline = line.strip().split("\t")
+            textid = spline[ID_COLUMN-1]
+            b.append(textid)
+            for column in range(ANNOTATION_FIRST_COLUMN-1, ANNOTATION_LAST_COLUMN):
+                try:
+                    mydict[spline[column].lower()] += 1
+		except KeyError:
+                    sys.stderr.write(textid + "\t: WARNING: Undefined category '" + spline[column] + "' in column " + str(column) + "\n")
+                    error = True
+                except IndexError:
+                    sys.stderr.write(textid + "\t: WARNING: No annotation in column " + str(column) + "\n")
+                    error = True
+            if error == True:
+                b = b + ['_']*len(mydict)
+                out_line = "\t".join(b)
+            else:
+                for i in sorted(mydict):
+                    b.append(str(mydict[i]))
+            out_line = "\t".join(b)
+            sys.stdout.write(out_line + "\n")
+
+    infile.close()
 
 
 

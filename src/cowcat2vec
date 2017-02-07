@@ -1,0 +1,66 @@
+#!/usr/bin/python
+
+# This reads in a spreadsheet (tab separated) with COWCat annotations,
+# (one document per line) and constructs a vector of annotations for 
+# each document.
+
+CATEGORIES=["te","me","hi","ph","be","lw","po","so","ir","bi","pu","ic","na","sp","ar","en","le","iv","fi","sc"]
+#ANNOTATION_FIRST_COLUMN=4
+#ANNOTATION_LAST_COLUMN=7
+#ID_COLUMN=3
+
+## Don't adapt past this line ##
+
+class annodict(dict):
+	def __init__(self,cats):
+		for cat in cats:
+			self[cat] = 0
+
+
+
+
+
+def main():
+	import sys
+	infile = open(sys.argv[1])
+	ids = sys.argv[2].strip()
+	columns = sys.argv[3].strip().split("-")
+	ANNOTATION_FIRST_COLUMN = int(columns[0])
+	ANNOTATION_LAST_COLUMN = int(columns[1])
+        ID_COLUMN = int(ids)
+      	
+	for line in infile:
+		if not line.startswith('#'):
+			b = []
+                        error = False
+			mydict = annodict(CATEGORIES)
+			spline = line.strip().split("\t")
+			textid = spline[ID_COLUMN-1]
+			b.append(textid)
+			for column in range(ANNOTATION_FIRST_COLUMN-1, ANNOTATION_LAST_COLUMN):
+				try:
+					mydict[spline[column].lower()] += 1
+				except KeyError:
+					sys.stderr.write(textid + "\t: Undefined category '" + spline[column] + "' in column " + str(column) + "\n")
+#					sys.exit(1)
+                                        error = True
+				except IndexError:
+					sys.stderr.write(textid + "\t: No annotation in column " + str(column) + "\n")
+                                        error = True
+			if error == True:
+                                b = b + ['_']*len(mydict)
+                        	out_line = "\t".join(b)
+                        else:
+    				for i in sorted(mydict):
+					b.append(str(mydict[i]))
+			out_line = "\t".join(b)
+			sys.stdout.write(out_line + "\n")
+
+
+
+
+if __name__ == "__main__":
+	main()
+
+
+

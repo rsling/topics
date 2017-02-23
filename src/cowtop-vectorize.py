@@ -9,7 +9,6 @@ import sys
 from gensim import corpora
 from cowtop import CowcorpText, CowcorpVec
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('infile', help='COW-XML input file')
@@ -21,7 +20,9 @@ def main():
     parser.add_argument("--mergers", type=str, help="file with tab-separated merger definitions")
     parser.add_argument("--minlength", type=int, default=-1, help="minimal token length of documents")
     parser.add_argument("--debug", action="store_true", help="whether corpus should be dumped after pre-processing")
+    parser.add_argument("--zipped", action="store_true", help="use gzip for corpus files")
     args = parser.parse_args()
+
 
     # Build output file names.
     fn_corpus   = args.outprefix + "_bow.mm"
@@ -92,6 +93,8 @@ def main():
                 with open(l[2]) as f:
                     il = [x.decode('utf-8').strip() for x in f.readlines()]
                 filters.append([int(l[0]), l[1], il])
+    else:
+      filters = None
 
     # Read mergers file.
     mergers = list()
@@ -99,24 +102,26 @@ def main():
         for m in open(args.mergers):
             lm = m.strip().decode('utf-8').split('\t')
             mergers.append([int(lm[0]), lm[1], [int(x) for x in lm[2].split(',')]  ])
+    else:
+      mergers = None
 
     # Create dictionary or load existing one.
     if not args.dictionary:
-        c=CowcorpText(args.infile, columns, filters, mergers, args.minlength)
+        c=CowcorpText(args.infile, columns, filters, mergers, args.minlength, args.zipped)
         dictionary = corpora.Dictionary(doc for doc in c)
         dictionary.save(fn_dict)
         dictionary.save_as_text(fn_dict_txt)
     else:
         dictionary = corpora.dictionary.Dictionary.load(args.dictionary)
 
-
+ 
     # Create matricified corpus.
-    vc=CowcorpVec(args.infile, columns, filters, mergers, args.minlength, dictionary)
+    vc=CowcorpVec(args.infile, columns, filters, mergers, args.minlength, dictionary, args.zipped)
     corpora.MmCorpus.serialize(fn_corpus, vc)
 
     # If debug dump was requested, do it.
     if args.debug:
-        dc=CowcorpText(args.infile, columns, filters, mergers, args.minlength)
+        dc=CowcorpText(args.infile, columns, filters, mergers, args.minlength, args.zipped)
         f_debug = open(fn_debug, 'wb')
         for document in dc:
             f_debug.write((' ').join(document).encode('utf-8') + '\n\n')

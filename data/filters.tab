@@ -1,9 +1,7 @@
-2	copyif	0	(unknown)
-2	entities
-2	alpha
-2	length	4	30
-2	lower
-2	blacklist	/home/rsling/usr/local/topics/data/lemma.blacklist
-1	lower
-1	truncate	2
-1	whitelist	/home/rsling/usr/local/topics/data/pos.whitelist
+9	setstrip
+9	entities
+9	length	3	30
+9	alpha
+9	lower
+9	blacklist	/home/rsling/usr/local/topics/data/lemma.blacklist
+8	whitelist	/home/rsling/usr/local/topics/data/pos.whitelist

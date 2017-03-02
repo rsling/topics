@@ -8,20 +8,24 @@ import os.path
 import sys
 import copy
 from gensim import models, corpora
+import logging
 
 
 def main():
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument('corpus', help='serialized corpus (MM format)')
     parser.add_argument('dictionary', help='serialized Gensim dictionary matching corpus')
     parser.add_argument('outprefix', help='prefix for output files (model and TSV)')
     parser.add_argument('num_topics', type=int, help='number of topics to infer')
     parser.add_argument('--low', type=int, help='lower bound on term-document frequency (absolute)')
-    parser.add_argument('--high', type=float, help='upper bound on term-document frequency (%)')
+    parser.add_argument('--high', type=float, help='upper bound on term-document frequency (proportion)')
     parser.add_argument('--iters', type=int, help='LSA iterations')
     parser.add_argument('--samples', type=int, help='LSA extra samples')
+    parser.add_argument('--chunksize', type=int, help='chunk size')
     parser.add_argument('--resume', help='specifiy a previously created LSI model')
     parser.add_argument('--erase', action='store_true', help="erase outout files if present")
+    parser.add_argument('--distributed', action='store_true', help="run on cluster (already set up)")
     args = parser.parse_args()
 
     # Sanity-check num_topics.
@@ -37,7 +41,8 @@ def main():
     # Set default LSI params.
     iters=4 if not args.iters else args.iters
     samples=300 if not args.samples else args.samples
-
+    chunksize=1000 if not args.chunksize else args.chunksize
+ 
     # Check input files.
     infiles = [args.corpus, args.dictionary]
     if args.resume:
@@ -52,6 +57,7 @@ def main():
     if not args.resume:
         outfiles.append(fn_model)
     
+    # In case dictionary filters are used, check new files.
     if args.low or args.high:
         fn_newdict=args.outprefix + "_filtered.dict"
         outfiles.append(fn_newdict)
@@ -109,7 +115,7 @@ def main():
         tfidf = models.TfidfModel(corpus)
         tfidf.save(fn_tfidf)
         corpus_tfidf = tfidf[corpus]
-        lsi = models.LsiModel(corpus_tfidf, onepass=False, power_iters=iters, extra_samples=samples, id2word=dictionary, num_topics=args.num_topics)
+        lsi = models.LsiModel(corpus_tfidf, onepass=False, power_iters=iters, extra_samples=samples, id2word=dictionary, num_topics=args.num_topics, distributed=args.distributed, chunksize=chunksize)
         lsi.save(fn_model)
 
     # Dump topics.

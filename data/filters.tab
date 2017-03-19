@@ -4,4 +4,5 @@
 9	alpha
 9	lower
 9	blacklist	/home/rsling/usr/local/topics/data/lemma.blacklist
+5	blacklist	/home/rsling/usr/local/topics/data/ner.blacklist
 8	whitelist	/home/rsling/usr/local/topics/data/pos.whitelist

@@ -198,7 +198,7 @@ class CowcorpText:
     # incomprehensible. Look at the comments and the output.)
     def merge_if_identical(self, document, check, value, merge):
 
-        # Create new outpu list.
+        # Create new output list.
         o = list()
 
         # At start, we have not seen a target item
@@ -215,7 +215,7 @@ class CowcorpText:
                     
                     # ... then construct new "last" with merging ...
                     for i in merge:
-                        last[i] = last[i] + t[i]
+                        last[i] = last[i] + '+++' + t[i]
                 
                 # ... but if only the previous token matched, there is
                 #     no sequence, and we write both to output and

@@ -1,0 +1,48 @@
+#!/usr/bin/python
+
+import sys
+from wordcloud import WordCloud
+import itertools
+import matplotlib.pyplot as plt
+
+
+if not len(sys.argv) == 3:
+    sys.exit('Specify exactly 2 arguments: IN FILE and OUT FOLDER.')
+
+outpath = sys.argv[2]
+
+for l in open(sys.argv[1]):
+  l = l.decode('utf-8').strip()
+
+  if not l:
+    continue
+
+  terms = l.split('\t')
+  topic  = terms[0]
+  del terms[0] 
+  terms = [t.split(' ') for t in terms]
+
+  # This is clumsy, but fastest for now.
+  words = [' '.join(list(itertools.repeat(t, int(float(w)*1000)))) for t, w in terms]
+  text = ' '.join(words).strip()
+  if len(text) > 0:
+    try:
+
+      wordcloud = WordCloud()
+      wordcloud.normalize_plurals = False
+      wordcloud.regexp            = r'\w+'
+      wordcloud.collocations      = False
+      wordcloud.background_color  = "white"
+      wordcloud.relative_scaling  = 1
+      wordcloud.prefer_horizontal = 1
+
+      wordcloud.generate(text)
+
+      plt.imshow(wordcloud, interpolation='bilinear')
+      plt.axis("off")
+      plt.savefig(outpath + '/' + topic + '.png')
+    except:
+      print 'Topic %s caused a problem.' % topic
+  else:
+    print 'Topic %s is defective.' % topic
+
